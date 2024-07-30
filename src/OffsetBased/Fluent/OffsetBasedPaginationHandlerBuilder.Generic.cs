@@ -10,6 +10,13 @@ using OffsetBased.PaginationInformationHandling.Fluent;
 
 namespace OffsetBased.Fluent;
 
+// TODO: Clean up the structure and all this mess, comment on how this works
+public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem>
+    : OffsetBasedPaginationHandlerBuilder<
+        OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem>,
+        TTransformedPage,
+        TItem>;
+
 /// <inheritdoc />
 /// <typeparam name="TTransformedPage">
 /// The type of the transformed page after pagination information extraction.
@@ -18,7 +25,9 @@ namespace OffsetBased.Fluent;
 // Justification: False positive, since we inheritdoc.
 [PublicAPI]
 #pragma warning disable CS1712 // Type parameter has no matching typeparam tag in the XML comment (but other type parameters do)
-public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : PaginationHandlerBuilder<TItem>
+public class OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPage, TItem>
+    : PaginationHandlerBuilderWithBoundHttpClient<TDerivedBuilder, TItem>
+    where TDerivedBuilder : OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPage, TItem>
 #pragma warning restore CS1712 // Type parameter has no matching typeparam tag in the XML comment (but other type parameters do)
 {
     private IPageRequestGenerator? _pageRequestGenerator;
@@ -27,20 +36,15 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
 
     private IPaginationInformationExtractor<TTransformedPage>? _paginationInformationExtractor;
 
-    /// <inheritdoc />
-    public override OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithHttpClient(HttpClient httpClient)
-        => (OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem>)base.WithHttpClient(httpClient);
-
     /// <summary>
     /// Sets the <see cref="IPageRequestGenerator"/> to use for generating the page requests.
     /// </summary>
     /// <param name="pageRequestGenerator">The <see cref="IPageRequestGenerator"/> to use.</param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithPageRequestGeneration(
-        IPageRequestGenerator pageRequestGenerator)
+    public TDerivedBuilder WithPageRequestGeneration(IPageRequestGenerator pageRequestGenerator)
     {
         _pageRequestGenerator = pageRequestGenerator;
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <summary>
@@ -50,11 +54,11 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
     ///     A function to create the <see cref="IPageRequestGenerator"/> from a <see cref="PageRequestGeneration"/>.
     /// </param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithPageRequestGeneration(
+    public TDerivedBuilder WithPageRequestGeneration(
         Func<PageRequestGeneration, IPageRequestGenerator> pageRequestGeneration)
     {
         _pageRequestGenerator = pageRequestGeneration(new());
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <summary>
@@ -65,11 +69,11 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
     ///     The <see cref="IPaginationInformationExtractor{TTransformedPage}"/> to use.
     /// </param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithPaginationInformationExtraction(
+    public TDerivedBuilder WithPaginationInformationExtraction(
         IPaginationInformationExtractor<TTransformedPage> paginationInformationExtractor)
     {
         _paginationInformationExtractor = paginationInformationExtractor;
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <summary>
@@ -80,12 +84,12 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
     ///     <see cref="PaginationInformationExtraction{TTransformedPage}"/>.
     /// </param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithPaginationInformationExtraction(
+    public TDerivedBuilder WithPaginationInformationExtraction(
         Func<PaginationInformationExtraction<TTransformedPage>, IPaginationInformationExtractor<TTransformedPage>>
             paginationInformationExtraction)
     {
         _paginationInformationExtractor = paginationInformationExtraction(new());
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <summary>
@@ -93,11 +97,10 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
     /// </summary>
     /// <param name="itemExtractor">The <see cref="IItemExtractor{TTransformedPage, TItem}"/> to use.</param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithItemExtraction(
-        IItemExtractor<TTransformedPage, TItem> itemExtractor)
+    public TDerivedBuilder WithItemExtraction(IItemExtractor<TTransformedPage, TItem> itemExtractor)
     {
         _itemExtractor = itemExtractor;
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <summary>
@@ -108,11 +111,11 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
     ///     <see cref="ItemExtraction{TTransformedPage, TItem}"/>.
     /// </param>
     /// <returns>The modified builder instance.</returns>
-    public virtual OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> WithItemExtraction(
+    public TDerivedBuilder WithItemExtraction(
         Func<ItemExtraction<TTransformedPage, TItem>, IItemExtractor<TTransformedPage, TItem>> itemExtraction)
     {
         _itemExtractor = itemExtraction(new());
-        return this;
+        return (TDerivedBuilder)this;
     }
 
     /// <inheritdoc />
@@ -141,5 +144,5 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> : Pagi
 
     private static string ComponentNotSetMessage(string componentName, string methodName)
         => $"The {componentName} must be set via {methodName} when using {nameof(Build)} "
-           + $"with a {nameof(OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem>)}.";
+           + $"with a {nameof(OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPage, TItem>)}.";
 }
