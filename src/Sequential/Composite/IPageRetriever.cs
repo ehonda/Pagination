@@ -1,7 +1,8 @@
 ﻿namespace Sequential.Composite;
 
 // TODO: notnull constraints?
-public interface IPageRetriever<in TPaginationContext, TPage>
+public interface IPageRetriever<TPage>
 {
-    Task<TPage> GetPageAsync(TPaginationContext context, CancellationToken cancellationToken = default);
+    // TODO: Option type or nullable?
+    Task<TPage> GetAsync(IPaginationContext<TPage>? context, CancellationToken cancellationToken = default);
 }
