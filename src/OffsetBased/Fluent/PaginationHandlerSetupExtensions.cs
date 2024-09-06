@@ -12,7 +12,7 @@ public static class PaginationHandlerSetupExtensions
     /// Binds a <see cref="OffsetBasedPaginationHandlerBuilder{TTransformedPage, TItem}"/> to a
     /// <see cref="HttpClient"/>.
     /// </summary>
-    /// <param name="builderSetup">
+    /// <param name="fluentBuilderSetup">
     ///     The setup containing the <see cref="HttpClient"/> to bind the pagination handler to.
     /// </param>
     /// <typeparam name="TTransformedPage">
@@ -21,8 +21,8 @@ public static class PaginationHandlerSetupExtensions
     /// <typeparam name="TItem">The type of the items on the page.</typeparam>
     /// <returns>The bound pagination handler builder.</returns>
     public static OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem> OffsetBased<TTransformedPage, TItem>(
-        this PaginationHandlerBuilderSetup builderSetup)
+        this HttpPaginationHandlerFluentBuilderSetup fluentBuilderSetup)
         => OffsetBasedPaginationHandlerBuilder
             .Create<TTransformedPage, TItem>()
-            .WithHttpClient(builderSetup.HttpClient);
+            .WithHttpClient(fluentBuilderSetup.HttpClient);
 }

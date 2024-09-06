@@ -1,7 +1,10 @@
 using System.Runtime.CompilerServices;
+using Core;
 using JetBrains.Annotations;
 
-namespace Core;
+namespace Sequential;
+
+// TODO: Probably move this to it's own package, e.g. Sequential
 
 /// <summary>
 /// Retrieves all items from a paginated resource by sequentially going from one page to the next, as long as more pages
@@ -24,16 +27,17 @@ namespace Core;
 /// </item>
 /// </list>
 /// </remarks>
+/// <typeparam name="TPage">The type of the transformed pages.</typeparam>
 /// <typeparam name="TTransformedPage">The type of the transformed pages.</typeparam>
 /// <typeparam name="TItem">The type of the items.</typeparam>
 [PublicAPI]
-public abstract class SequentialPaginationHandler<TTransformedPage, TItem> : IPaginationHandler<TItem>
+public abstract class PaginationHandler<TPage, TTransformedPage, TItem> : IPaginationHandler<TItem>
 {
     /// <inheritdoc />
     public async IAsyncEnumerable<TItem> GetAllItemsAsync(
-        HttpClient httpClient, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var currentPage = await GetFirstPageAsync(httpClient, cancellationToken);
+        var currentPage = await GetFirstPageAsync(cancellationToken);
         var transformedCurrentPage = await TransformPageAsync(currentPage, cancellationToken);
 
         await foreach (var item in ExtractItemsAsync(transformedCurrentPage, cancellationToken))
@@ -42,9 +46,9 @@ public abstract class SequentialPaginationHandler<TTransformedPage, TItem> : IPa
             yield return item;
         }
 
-        while (await NextPageExistsAsync(httpClient, transformedCurrentPage, cancellationToken))
+        while (await NextPageExistsAsync(transformedCurrentPage, cancellationToken))
         {
-            currentPage = await GetNextPageAsync(httpClient, transformedCurrentPage, cancellationToken);
+            currentPage = await GetNextPageAsync(transformedCurrentPage, cancellationToken);
             transformedCurrentPage = await TransformPageAsync(currentPage, cancellationToken);
 
             await foreach (var item in ExtractItemsAsync(transformedCurrentPage, cancellationToken))
@@ -58,12 +62,11 @@ public abstract class SequentialPaginationHandler<TTransformedPage, TItem> : IPa
     /// <summary>
     /// Retrieves the first page of the paginated resource.
     /// </summary>
-    /// <param name="httpClient">The http client to use for the request.</param>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>The first page.</returns>
-    protected abstract Task<HttpResponseMessage> GetFirstPageAsync(
-        HttpClient httpClient, CancellationToken cancellationToken = default);
+    protected abstract Task<TPage> GetFirstPageAsync(CancellationToken cancellationToken = default);
 
+    // TODO: Should this be its own method, or should it be implicit in TPage, i.e. we always operate on transformed pages?
     /// <summary>
     /// Transforms the given <paramref name="page"/>, typically to extract information about the next page, as well as
     /// the items on the page.
@@ -72,27 +75,25 @@ public abstract class SequentialPaginationHandler<TTransformedPage, TItem> : IPa
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>The transformed page.</returns>
     protected abstract Task<TTransformedPage> TransformPageAsync(
-        HttpResponseMessage page, CancellationToken cancellationToken = default);
+        TPage page, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks whether a next page exists.
     /// </summary>
-    /// <param name="httpClient">The http client to use, in case a request needs to be made.</param>
     /// <param name="currentPage">The current page.</param>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>Whether a next page exists.</returns>
     protected abstract Task<bool> NextPageExistsAsync(
-        HttpClient httpClient, TTransformedPage currentPage, CancellationToken cancellationToken = default);
+        TTransformedPage currentPage, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves the next page.
     /// </summary>
-    /// <param name="httpClient">The http client to use for the request.</param>
     /// <param name="currentPage">The current page.</param>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>The next page.</returns>
-    protected abstract Task<HttpResponseMessage> GetNextPageAsync(
-        HttpClient httpClient, TTransformedPage currentPage, CancellationToken cancellationToken = default);
+    protected abstract Task<TPage> GetNextPageAsync(
+        TTransformedPage currentPage, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Extracts the items from the given <paramref name="page"/>.

@@ -13,6 +13,6 @@ public static class HttpClientExtensions
     /// </summary>
     /// <param name="httpClient">The http client to use to retrieve the paginated resource.</param>
     /// <returns>The setup via which the pagination handler to use can be selected fluently.</returns>
-    public static PaginationHandlerBuilderSetup WithPagination(this HttpClient httpClient)
+    public static HttpPaginationHandlerFluentBuilderSetup WithPagination(this HttpClient httpClient)
         => new() { HttpClient = httpClient };
 }

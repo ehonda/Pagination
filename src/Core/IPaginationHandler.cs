@@ -15,5 +15,5 @@ public interface IPaginationHandler<out TItem>
     /// <param name="httpClient">The http client to use for the requests.</param>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>An async enumerable of all items.</returns>
-    IAsyncEnumerable<TItem> GetAllItemsAsync(HttpClient httpClient, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<TItem> GetAllItemsAsync(CancellationToken cancellationToken = default);
 }

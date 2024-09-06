@@ -3,6 +3,7 @@ using Core;
 using OffsetBased.ItemExtractionHandling;
 using OffsetBased.PageRequestGenerationHandling;
 using OffsetBased.PaginationInformationHandling;
+using Sequential;
 
 namespace OffsetBased;
 
@@ -15,8 +16,9 @@ namespace OffsetBased;
 /// <typeparam name="TItem">The type of the items to extract from the pages.</typeparam>
 [PublicAPI]
 public class OffsetBasedPaginationHandler<TTransformedPage, TItem>
-    : SequentialPaginationHandler<TransformedPageWithPaginationInformation<TTransformedPage>, TItem>
+    : PaginationHandler<HttpResponseMessage, TransformedPageWithPaginationInformation<TTransformedPage>, TItem>
 {
+    private readonly HttpClient _httpClient;
     private readonly IPageRequestGenerator _pageRequestGenerator;
     private readonly IPaginationInformationExtractor<TTransformedPage> _paginationInformationExtractor;
     private readonly IItemExtractor<TTransformedPage, TItem> _itemExtractor;
@@ -28,10 +30,12 @@ public class OffsetBasedPaginationHandler<TTransformedPage, TItem>
     /// <param name="paginationInformationExtractor">Used to extract pagination information from the pages.</param>
     /// <param name="itemExtractor">Used to extract items from the transformed pages.</param>
     public OffsetBasedPaginationHandler(
+        HttpClient httpClient,
         IPageRequestGenerator pageRequestGenerator,
         IPaginationInformationExtractor<TTransformedPage> paginationInformationExtractor,
         IItemExtractor<TTransformedPage, TItem> itemExtractor)
     {
+        _httpClient = httpClient;
         _pageRequestGenerator = pageRequestGenerator;
         _paginationInformationExtractor = paginationInformationExtractor;
         _itemExtractor = itemExtractor;
@@ -39,35 +43,33 @@ public class OffsetBasedPaginationHandler<TTransformedPage, TItem>
 
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> GetFirstPageAsync(
-        HttpClient httpClient,
         CancellationToken cancellationToken = default)
     // TODO: Throw If Not Successful
-        => await httpClient
+        => await _httpClient
             .SendAsync(
-                await _pageRequestGenerator.GenerateAsync(httpClient.BaseAddress, 1, cancellationToken),
+                await _pageRequestGenerator.GenerateAsync(_httpClient.BaseAddress, 1, cancellationToken),
                 cancellationToken);
 
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> GetNextPageAsync(
-        HttpClient httpClient,
         TransformedPageWithPaginationInformation<TTransformedPage> currentPage,
         CancellationToken cancellationToken = default)
         // TODO: Throw If Not Successful
-        => await httpClient
+        => await _httpClient
             .SendAsync(
                 await _pageRequestGenerator.GenerateAsync(
-                    httpClient.BaseAddress,
+                    _httpClient.BaseAddress,
                     currentPage.PaginationInformation.CurrentPage + 1,
                     cancellationToken),
                 cancellationToken);
 
     /// <inheritdoc />
-    protected override async Task<bool> NextPageExistsAsync(
-        HttpClient httpClient,
+    protected override Task<bool> NextPageExistsAsync(
         TransformedPageWithPaginationInformation<TTransformedPage> currentPage,
         CancellationToken cancellationToken = default)
     {
-        return currentPage.PaginationInformation.CurrentPage < currentPage.PaginationInformation.TotalPages;
+        return Task.FromResult(
+            currentPage.PaginationInformation.CurrentPage < currentPage.PaginationInformation.TotalPages);
     }
 
     /// <inheritdoc />

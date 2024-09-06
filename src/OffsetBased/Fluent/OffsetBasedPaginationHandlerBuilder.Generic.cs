@@ -26,10 +26,12 @@ public class OffsetBasedPaginationHandlerBuilder<TTransformedPage, TItem>
 [PublicAPI]
 #pragma warning disable CS1712 // Type parameter has no matching typeparam tag in the XML comment (but other type parameters do)
 public class OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPage, TItem>
-    : PaginationHandlerBuilderWithBoundHttpClient<TDerivedBuilder, TItem>
+    : PaginationHandlerBuilder<TItem>
     where TDerivedBuilder : OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPage, TItem>
 #pragma warning restore CS1712 // Type parameter has no matching typeparam tag in the XML comment (but other type parameters do)
 {
+    private HttpClient? _httpClient;
+    
     private IPageRequestGenerator? _pageRequestGenerator;
 
     private IItemExtractor<TTransformedPage, TItem>? _itemExtractor;
@@ -117,11 +119,22 @@ public class OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPa
         _itemExtractor = itemExtraction(new());
         return (TDerivedBuilder)this;
     }
+    
+    // with http client
+    public TDerivedBuilder WithHttpClient(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+        return (TDerivedBuilder)this;
+    }
 
     /// <inheritdoc />
     /// <exception cref="NullReferenceException">If any of the components have not been set.</exception>
     public override IPaginationHandler<TItem> Build()
     {
+        Guard.Against.Null(
+            _httpClient,
+            message: ComponentNotSetMessage(nameof(_httpClient), nameof(WithHttpClient)));
+        
         Guard.Against.Null(
             _pageRequestGenerator,
             message: ComponentNotSetMessage(nameof(_pageRequestGenerator), nameof(WithPageRequestGeneration)));
@@ -137,6 +150,7 @@ public class OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPa
             message: ComponentNotSetMessage(nameof(_itemExtractor), nameof(WithItemExtraction)));
 
         return new OffsetBasedPaginationHandler<TTransformedPage, TItem>(
+            _httpClient,
             _pageRequestGenerator,
             _paginationInformationExtractor,
             _itemExtractor);

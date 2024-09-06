@@ -11,7 +11,7 @@ namespace Core.Fluent;
 /// used in this setup via <see cref="PaginationHandlerBuilder{TItem}.WithHttpClient"/>.
 /// </remarks>
 [PublicAPI]
-public class PaginationHandlerBuilderSetup
+public class HttpPaginationHandlerFluentBuilderSetup
 {
     /// <summary>
     /// The http client to bind the pagination handler builder to.
