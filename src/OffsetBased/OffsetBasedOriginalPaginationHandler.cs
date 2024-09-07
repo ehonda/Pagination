@@ -15,8 +15,8 @@ namespace OffsetBased;
 /// </typeparam>
 /// <typeparam name="TItem">The type of the items to extract from the pages.</typeparam>
 [PublicAPI]
-public class OffsetBasedPaginationHandler<TTransformedPage, TItem>
-    : PaginationHandler<HttpResponseMessage, TransformedPageWithPaginationInformation<TTransformedPage>, TItem>
+public class OffsetBasedOriginalPaginationHandler<TTransformedPage, TItem>
+    : OriginalPaginationHandler<HttpResponseMessage, TransformedPageWithPaginationInformation<TTransformedPage>, TItem>
 {
     private readonly HttpClient _httpClient;
     private readonly IPageRequestGenerator _pageRequestGenerator;
@@ -24,12 +24,12 @@ public class OffsetBasedPaginationHandler<TTransformedPage, TItem>
     private readonly IItemExtractor<TTransformedPage, TItem> _itemExtractor;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OffsetBasedPaginationHandler{TTransformedPage, TItem}"/> class.
+    /// Initializes a new instance of the <see cref="OffsetBasedOriginalPaginationHandler{TTransformedPage,TItem}"/> class.
     /// </summary>
     /// <param name="pageRequestGenerator">Used to generate requests for the pages.</param>
     /// <param name="paginationInformationExtractor">Used to extract pagination information from the pages.</param>
     /// <param name="itemExtractor">Used to extract items from the transformed pages.</param>
-    public OffsetBasedPaginationHandler(
+    public OffsetBasedOriginalPaginationHandler(
         HttpClient httpClient,
         IPageRequestGenerator pageRequestGenerator,
         IPaginationInformationExtractor<TTransformedPage> paginationInformationExtractor,

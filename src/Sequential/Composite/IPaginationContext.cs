@@ -1,8 +1,11 @@
-﻿namespace Sequential.Composite;
+﻿using JetBrains.Annotations;
 
+namespace Sequential.Composite;
+
+[PublicAPI]
 public interface IPaginationContext<out TPage>
 {
     TPage CurrentPage { get; }
     
-    Task<bool> NextPageExistsAsync(CancellationToken cancellationToken = default);
+    bool NextPageExists { get; }
 }

@@ -3,7 +3,7 @@ using Core.Fluent;
 namespace OffsetBased.Fluent;
 
 /// <summary>
-/// A fluent API to bind a <see cref="OffsetBasedPaginationHandler{TTransformedPage, TItem}"/> to a <see cref="HttpClient"/>.
+/// A fluent API to bind a <see cref="OffsetBasedOriginalPaginationHandler{TTransformedPage,TItem}"/> to a <see cref="HttpClient"/>.
 /// </summary>
 [PublicAPI]
 public static class PaginationHandlerSetupExtensions

@@ -3,12 +3,12 @@ using Sequential;
 
 namespace DirectImplementation;
 
-public class GitHubPaginationHandler<TItem> : PaginationHandler<HttpResponseMessage, HttpResponseMessage, TItem>
+public class GitHubOriginalPaginationHandler<TItem> : OriginalPaginationHandler<HttpResponseMessage, HttpResponseMessage, TItem>
 {
     private readonly HttpClient _httpClient;
     private readonly Func<HttpResponseMessage, CancellationToken, IAsyncEnumerable<TItem>> _itemExtractor;
 
-    public GitHubPaginationHandler(
+    public GitHubOriginalPaginationHandler(
         HttpClient httpClient,
         Func<HttpResponseMessage, CancellationToken, IAsyncEnumerable<TItem>> itemExtractor)
     {

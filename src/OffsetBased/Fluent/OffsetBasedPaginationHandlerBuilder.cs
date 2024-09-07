@@ -1,7 +1,7 @@
 namespace OffsetBased.Fluent;
 
 /// <summary>
-/// A fluent API for constructing a <see cref="OffsetBasedPaginationHandler{TTransformedPage, TItem}"/>.
+/// A fluent API for constructing a <see cref="OffsetBasedOriginalPaginationHandler{TTransformedPage,TItem}"/>.
 /// </summary>
 [PublicAPI]
 public static class OffsetBasedPaginationHandlerBuilder

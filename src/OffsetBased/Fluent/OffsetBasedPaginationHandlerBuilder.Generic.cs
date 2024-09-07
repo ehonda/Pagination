@@ -149,7 +149,7 @@ public class OffsetBasedPaginationHandlerBuilder<TDerivedBuilder, TTransformedPa
             _itemExtractor,
             message: ComponentNotSetMessage(nameof(_itemExtractor), nameof(WithItemExtraction)));
 
-        return new OffsetBasedPaginationHandler<TTransformedPage, TItem>(
+        return new OffsetBasedOriginalPaginationHandler<TTransformedPage, TItem>(
             _httpClient,
             _pageRequestGenerator,
             _paginationInformationExtractor,

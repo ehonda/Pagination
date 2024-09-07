@@ -10,8 +10,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddHttpClient<GitHubPaginationHandler<Issue>>();
-builder.Services.AddTransient<IPaginationHandler<Issue>>(serviceProvider => new GitHubPaginationHandler<Issue>(
+builder.Services.AddHttpClient<GitHubOriginalPaginationHandler<Issue>>();
+builder.Services.AddTransient<IPaginationHandler<Issue>>(serviceProvider => new GitHubOriginalPaginationHandler<Issue>(
     // TODO: This is the wrong client, we want the typed one
     serviceProvider.GetRequiredService<HttpClient>(),
     async (response, cancellationToken) =>
@@ -20,7 +20,7 @@ builder.Services.AddTransient<IPaginationHandler<Issue>>(serviceProvider => new 
         return (issues ?? []).ToAsyncEnumerable();
     }));
 
-builder.Services.AddHttpClient<GitHubPaginationHandler<PullRequest>>();
+builder.Services.AddHttpClient<GitHubOriginalPaginationHandler<PullRequest>>();
 
 var app = builder.Build();
 
