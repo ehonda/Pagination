@@ -2,8 +2,8 @@
 
 // TODO: notnull constraints?
 // TODO: Better name for TTransformedPage?
-public interface IPageRetriever<in TTransformedPage, TPage>
+public interface IPageRetriever<in TPaginationContext, TPage>
 {
     // TODO: Option type or nullable?
-    Task<TPage> GetAsync(TTransformedPage? context, CancellationToken cancellationToken = default);
+    Task<TPage> GetAsync(TPaginationContext? context, CancellationToken cancellationToken = default);
 }

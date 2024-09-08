@@ -1,7 +1,7 @@
 ﻿namespace Sequential.Composite;
 
 // TODO: Transformed page or page?
-public interface IPaginationContextExtractor<in TPage, TTransformedPage>
+public interface IPaginationContextExtractor<in TPage, TPaginationContext>
 {
-    Task<IPaginationContext<TTransformedPage>> ExtractAsync(TPage page, CancellationToken cancellationToken = default);
+    Task<TPaginationContext> ExtractAsync(TPage page, CancellationToken cancellationToken = default);
 }

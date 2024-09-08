@@ -1,7 +1,9 @@
 ﻿namespace Sequential.Composite;
 
-public interface IItemExtractor<in TPage, out TItem>
+public interface IItemExtractor<in TPaginationContext, out TItem>
 {
     // TODO: Consistent naming. ExtractItemsAsync, or ExtractAsync? - ItemExtractor or ItemsExtractor?
-    IAsyncEnumerable<TItem> ExtractItemsAsync(TPage page, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<TItem> ExtractItemsAsync(
+        TPaginationContext context,
+        CancellationToken cancellationToken = default);
 }
