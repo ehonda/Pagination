@@ -6,5 +6,7 @@ namespace Sequential.Composite;
 [PublicAPI]
 public interface INextPageChecker<in TPaginationContext>
 {
-    Task<bool> NextPageExistsAsync(TPaginationContext context, CancellationToken cancellationToken);
+    Task<bool> NextPageExistsAsync(
+        TPaginationContext context,
+        CancellationToken cancellationToken = default);
 }
