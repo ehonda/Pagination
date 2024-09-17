@@ -1,13 +1,24 @@
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TwitchPagination;
 using TwitchPagination.Authorization;
 
 var services = new ServiceCollection();
 
+// TODO: Maybe use hosting concept: https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host
+
+var configuration = Functions.BuildConfiguration();
+
 // TODO: Locate under $PAGINATION_SAMPLE_JSON_DIR_ABSOLUTE_PATH as well and load it from there
 // TODO: Use IOptions<ClientData>
 var clientData = (await JsonSerializer.DeserializeAsync<ClientData>(File.OpenRead("client.json")))!;
+
+// TODO: Bind to the section and then use IOptions<ClientData> everywhere
+// services
+//     .AddOptions<ClientData>()
+//     .Bind(configuration)
+
 services.AddSingleton(clientData);
 services.AddHttpClient();
 services.AddAuthorization();
