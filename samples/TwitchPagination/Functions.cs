@@ -10,17 +10,10 @@ public static class Functions
     {
         DotEnv.Load();
         
-        var directory = EnvReader.GetStringValue("PAGINATION_SAMPLE_JSON_DIR_ABSOLUTE_PATH");
-        const string file = "client.json";
-        var path = Path.Combine(directory, file);
+        var directory = EnvReader.GetStringValue("PAGINATION_SAMPLE_CONFIGURATION_DIR");
         
-        // TODO: Can we make it so we get
-        // {
-        //     "ClientData": { ... }
-        // }
-        // here where `{ ... }` is the content of the file
         return new ConfigurationBuilder()
-            .AddJsonFile(path)
+            .AddKeyPerFile(directory)
             .Build();
     }
 }

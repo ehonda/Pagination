@@ -8,9 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="client.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update=".env">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
@@ -21,11 +18,16 @@
       <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.KeyPerFile" Version="8.0.8" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
       <PackageReference Include="NodaTime" Version="3.1.12" />
       <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Assets\CachedData\" />
     </ItemGroup>
 
 </Project>

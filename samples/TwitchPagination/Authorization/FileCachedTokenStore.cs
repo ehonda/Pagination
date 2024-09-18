@@ -4,6 +4,11 @@ namespace TwitchPagination.Authorization;
 
 public class FileCachedTokenStore : ICachedTokenStore
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        WriteIndented = true
+    };
+    
     private readonly string _path;
 
     public FileCachedTokenStore(string path)
@@ -13,7 +18,11 @@ public class FileCachedTokenStore : ICachedTokenStore
 
     public async Task PutAsync(CachedToken cachedToken)
     {
-        await File.WriteAllTextAsync(_path, JsonSerializer.Serialize(cachedToken));
+        await File.WriteAllTextAsync(
+            _path,
+            JsonSerializer.Serialize(
+                cachedToken,
+                JsonSerializerOptions));
     }
 
     public async Task<CachedToken?> GetAsync()

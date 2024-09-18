@@ -1,6 +1,5 @@
-using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using TwitchPagination;
 using TwitchPagination.Authorization;
 
@@ -10,22 +9,19 @@ var services = new ServiceCollection();
 
 var configuration = Functions.BuildConfiguration();
 
-// TODO: Locate under $PAGINATION_SAMPLE_JSON_DIR_ABSOLUTE_PATH as well and load it from there
-// TODO: Use IOptions<ClientData>
-var clientData = (await JsonSerializer.DeserializeAsync<ClientData>(File.OpenRead("client.json")))!;
+// TODO: Fix the issue that we need a paramless ctor here
+services
+    .AddOptions<ClientData>()
+    .Bind(configuration.GetSection("client.json"));
 
-// TODO: Bind to the section and then use IOptions<ClientData> everywhere
-// services
-//     .AddOptions<ClientData>()
-//     .Bind(configuration)
-
-services.AddSingleton(clientData);
 services.AddHttpClient();
 services.AddAuthorization();
 
 var provider = services.BuildServiceProvider();
 
 var tokenResponse = await provider.GetRequiredService<IAccessTokenSource>().GetAccessTokenAsync();
+
+var clientData = provider.GetRequiredService<IOptions<ClientData>>().Value;
 
 var client = provider.GetRequiredService<HttpClient>();
 

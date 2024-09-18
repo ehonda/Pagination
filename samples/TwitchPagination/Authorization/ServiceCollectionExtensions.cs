@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
             // TODO: Error handling
             DotEnv.Load();
             
-            var directory = EnvReader.GetStringValue("PAGINATION_SAMPLE_JSON_DIR_ABSOLUTE_PATH");
+            var directory = EnvReader.GetStringValue("PAGINATION_SAMPLE_CACHED_DATA_DIR");
             const string file = "cached_token.json";
             var path = Path.Combine(directory, file);
             

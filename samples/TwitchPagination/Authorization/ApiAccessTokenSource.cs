@@ -1,15 +1,16 @@
 using System.Net.Http.Json;
+using Microsoft.Extensions.Options;
 
 namespace TwitchPagination.Authorization;
 
 public class ApiAccessTokenSource : IAccessTokenSource
 {
-    private readonly ClientData _clientData;
+    private readonly IOptions<ClientData> _clientData;
     private readonly HttpClient _httpClient;
 
     public ApiAccessTokenSource(
         HttpClient httpClient,
-        ClientData clientData)
+        IOptions<ClientData> clientData)
     {
         _clientData = clientData;
         _httpClient = httpClient;
@@ -23,8 +24,8 @@ public class ApiAccessTokenSource : IAccessTokenSource
                 "https://id.twitch.tv/oauth2/token",
                 new FormUrlEncodedContent(new Dictionary<string, string>
                 {
-                    ["client_id"] = _clientData.Id,
-                    ["client_secret"] = _clientData.Secret,
+                    ["client_id"] = _clientData.Value.Id,
+                    ["client_secret"] = _clientData.Value.Secret,
                     ["grant_type"] = "client_credentials"
                 }));
 
