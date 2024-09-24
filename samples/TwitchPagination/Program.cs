@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using TwitchPagination;
 using TwitchPagination.Authorization;
 
@@ -13,21 +12,10 @@ services
     .AddOptions<ClientData>()
     .Bind(configuration.GetSection(ClientData.ConfigurationSectionName));
 
-services.AddHttpClient();
+services.AddHttpClient<ApiClient>();
 services.AddAuthorization();
 
 var provider = services.BuildServiceProvider();
-
-var tokenResponse = await provider.GetRequiredService<IAccessTokenSource>().GetAccessTokenAsync();
-
-var clientData = provider.GetRequiredService<IOptions<ClientData>>().Value;
-
-var client = provider.GetRequiredService<HttpClient>();
-
-// Setup default headers
-// TODO: Wire up via dependency injection
-client.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.AccessToken);
-client.DefaultRequestHeaders.Add("Client-Id", clientData.Id);
 
 // // IGDB ID: https://www.igdb.com/games/age-of-empires-ii-hd-edition
 // var queryParam = "igdb_id=2950";
@@ -40,6 +28,8 @@ client.DefaultRequestHeaders.Add("Client-Id", clientData.Id);
 // var topGamesResponse = await client.GetAsync("https://api.twitch.tv/helix/games?first=10");
 // var content = await topGamesResponse.Content.ReadAsStringAsync();
 // Console.WriteLine(content);
+
+var client = await provider.GetRequiredService<ApiClient>().GetClient();
 
 // Search by name example
 var queryParam = "name=Fortnite";
