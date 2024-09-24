@@ -9,10 +9,9 @@ var services = new ServiceCollection();
 
 var configuration = Functions.BuildConfiguration();
 
-// TODO: Fix the issue that we need a paramless ctor here
 services
     .AddOptions<ClientData>()
-    .Bind(configuration.GetSection("client.json"));
+    .Bind(configuration.GetSection(ClientData.ConfigurationSectionName));
 
 services.AddHttpClient();
 services.AddAuthorization();

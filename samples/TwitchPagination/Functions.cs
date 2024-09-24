@@ -11,9 +11,10 @@ public static class Functions
         DotEnv.Load();
         
         var directory = EnvReader.GetStringValue("PAGINATION_SAMPLE_CONFIGURATION_DIR");
+        var path = Path.Combine(directory, "client.json");
         
         return new ConfigurationBuilder()
-            .AddKeyPerFile(directory)
+            .AddJsonFile(path)
             .Build();
     }
 }
