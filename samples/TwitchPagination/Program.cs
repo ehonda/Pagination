@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TwitchPagination;
 using TwitchPagination.Authorization;
+using TwitchPagination.Games;
 
 var services = new ServiceCollection();
 
@@ -12,7 +13,12 @@ services
     .AddOptions<ClientData>()
     .Bind(configuration.GetSection(ClientData.ConfigurationSectionName));
 
-services.AddHttpClient<ApiClient>();
+services
+    .AddHttpClient(nameof(HttpClient))
+    .ConfigureForApi();
+
+services.AddGamesClient();
+
 services.AddAuthorization();
 
 var provider = services.BuildServiceProvider();
@@ -29,15 +35,12 @@ var provider = services.BuildServiceProvider();
 // var content = await topGamesResponse.Content.ReadAsStringAsync();
 // Console.WriteLine(content);
 
-var client = await provider.GetRequiredService<ApiClient>().GetClient();
+// var factory = provider.GetRequiredService<IHttpClientFactory>();
+// var client = factory.CreateClient(nameof(HttpClient));
 
 // Search by name example
-var queryParam = "name=Fortnite";
-var fortniteResponse = await client.GetAsync($"https://api.twitch.tv/helix/games?{queryParam}");
-var content = await fortniteResponse.Content.ReadAsStringAsync();
-Console.WriteLine(content);
 
-// var doc = await JsonDocument.ParseAsync(await aoe2HdResponse.Content.ReadAsStreamAsync());
-// TODO: Why does this not work?
-// var writer = new Utf8JsonWriter(Console.OpenStandardOutput());
-// doc.WriteTo(writer);
+var gamesClient = provider.GetRequiredService<GamesClient>();
+
+var fortnite = await gamesClient.GetFortnite();
+Console.WriteLine(fortnite);
