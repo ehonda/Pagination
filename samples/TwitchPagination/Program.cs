@@ -3,6 +3,10 @@ using TwitchPagination;
 using TwitchPagination.Authorization;
 using TwitchPagination.Games;
 
+// ------------------------------------------------------------------------------------------------------------------ //
+//                                                      Setup                                                         //
+// ------------------------------------------------------------------------------------------------------------------ //
+
 var services = new ServiceCollection();
 
 // TODO: Maybe use hosting concept: https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host
@@ -23,24 +27,16 @@ services.AddAuthorization();
 
 var provider = services.BuildServiceProvider();
 
-// // IGDB ID: https://www.igdb.com/games/age-of-empires-ii-hd-edition
-// var queryParam = "igdb_id=2950";
-// var aoe2HdResponse = await client.GetAsync($"https://api.twitch.tv/helix/games?{queryParam}");
-//
-// var content = await aoe2HdResponse.Content.ReadAsStringAsync();
-//
-// Console.WriteLine(content);
-
-// var topGamesResponse = await client.GetAsync("https://api.twitch.tv/helix/games?first=10");
-// var content = await topGamesResponse.Content.ReadAsStringAsync();
-// Console.WriteLine(content);
-
-// var factory = provider.GetRequiredService<IHttpClientFactory>();
-// var client = factory.CreateClient(nameof(HttpClient));
-
-// Search by name example
+// ------------------------------------------------------------------------------------------------------------------ //
+//                                                      Usage                                                         //
+// ------------------------------------------------------------------------------------------------------------------ //
 
 var gamesClient = provider.GetRequiredService<GamesClient>();
 
-var fortnite = await gamesClient.GetFortnite();
-Console.WriteLine(fortnite);
+var data = (await gamesClient.GetTopGamesNames(100))
+    .Zip(Enumerable.Range(1, 100));
+
+foreach (var (name, index) in data)
+{
+    Console.WriteLine($"{index}\t- {name}");
+}
