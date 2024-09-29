@@ -10,6 +10,7 @@ using TwitchPagination.Games;
 var services = new ServiceCollection();
 
 // TODO: Maybe use hosting concept: https://learn.microsoft.com/en-us/dotnet/core/extensions/generic-host
+// TODO: Set up logging
 
 var configuration = Functions.BuildConfiguration();
 
@@ -32,9 +33,17 @@ var provider = services.BuildServiceProvider();
 // ------------------------------------------------------------------------------------------------------------------ //
 
 var gamesClient = provider.GetRequiredService<GamesClient>();
+// TODO: Improve ux, fluent builder like for this
+var handler = new TwitchPagination.Games.V2.TopGamesPaginationHandler(gamesClient);
 
-var data = (await gamesClient.GetTopGamesNames(100))
-    .Zip(Enumerable.Range(1, 100));
+var top500 = await handler.GetAllItemsAsync().Take(500).ToListAsync();
+
+var data = top500
+    .Select(x => x.Name)
+    .Zip(Enumerable.Range(1, 500));
+
+// var data = (await gamesClient.GetTopGamesNames(100))
+//     .Zip(Enumerable.Range(1, 100));
 
 foreach (var (name, index) in data)
 {

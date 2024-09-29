@@ -32,14 +32,22 @@ public class GamesClient
         return await response.Content.ReadAsStringAsync();
     }
     
-    public async Task<string> GetTopGames()
+    public async Task<GetTopGamesResponse> GetTopGames(int first = 10, string? cursor = null)
     {
+        // TODO: Improve query building
+        var query = cursor is null
+            ? $"?first={first}"
+            : $"?first={first}&after={cursor}";
+        
         // TODO: Why do we have to specify `games/top...` here? If we just use `top`, the `.../games` suffix of the base
         //       address is eaten.
-        var response = await _httpClient.GetAsync("games/top?first=10");
+        var response = await _httpClient.GetAsync($"games/top?{query}");
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsStringAsync();
+        // TODO: When can this be null? Can we just bang it away?
+        return (await JsonSerializer.DeserializeAsync<GetTopGamesResponse>(
+                            await response.Content.ReadAsStreamAsync(),
+                            new JsonSerializerOptions(JsonSerializerDefaults.Web)))!;
     }
     
     public async Task<List<string>> GetTopGamesNames(int first = 10)
