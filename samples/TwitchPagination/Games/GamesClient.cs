@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using System.Text.Json;
 using Ardalis.GuardClauses;
 
@@ -5,6 +6,8 @@ namespace TwitchPagination.Games;
 
 public class GamesClient
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
+
     private readonly HttpClient _httpClient;
 
     public GamesClient(HttpClient httpClient)
@@ -45,9 +48,7 @@ public class GamesClient
         response.EnsureSuccessStatusCode();
 
         // TODO: When can this be null? Can we just bang it away?
-        return (await JsonSerializer.DeserializeAsync<GetTopGamesResponse>(
-                            await response.Content.ReadAsStreamAsync(),
-                            new JsonSerializerOptions(JsonSerializerDefaults.Web)))!;
+        return (await response.Content.ReadFromJsonAsync<GetTopGamesResponse>(JsonSerializerOptions))!;
     }
     
     public async Task<List<string>> GetTopGamesNames(int first = 10)
