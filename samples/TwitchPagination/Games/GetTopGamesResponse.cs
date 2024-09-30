@@ -38,4 +38,4 @@ public record Game(
 /// Represents the pagination data.
 /// </summary>
 public record Pagination(
-    string Cursor);
+    string? Cursor);
