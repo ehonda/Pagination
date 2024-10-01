@@ -34,7 +34,7 @@ var provider = services.BuildServiceProvider();
 
 var gamesClient = provider.GetRequiredService<GamesClient>();
 // TODO: Improve ux, fluent builder like for this
-var handler = new TwitchPagination.Games.V3.TopGamesPaginationHandler(gamesClient);
+var handler = new TwitchPagination.Games.V4.Composite.TopGamesPaginationHandler(gamesClient);
 
 var top500 = await handler.GetAllItemsAsync().Take(500).ToListAsync();
 

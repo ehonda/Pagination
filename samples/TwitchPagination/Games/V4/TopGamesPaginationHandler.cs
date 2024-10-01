@@ -1,6 +1,6 @@
-using CursorBased.V3;
+using CursorBased.V4;
 
-namespace TwitchPagination.Games.V3;
+namespace TwitchPagination.Games.V4;
 
 // This looks very clean as well, we only need to implement two trivial methods, we drop the
 // implementation of a pagination context and new up a cursor extractor instead
@@ -10,7 +10,6 @@ public class TopGamesPaginationHandler : PaginationHandler<
     private readonly GamesClient _client;
 
     public TopGamesPaginationHandler(GamesClient client)
-        : base(new CursorExtractor())
     {
         _client = client;
     }
@@ -22,4 +21,7 @@ public class TopGamesPaginationHandler : PaginationHandler<
     protected override IAsyncEnumerable<Game> ExtractItemsAsync(GetTopGamesResponse context,
         CancellationToken cancellationToken = default)
         => context.Data.ToAsyncEnumerable();
+
+    protected override Task<string?> ExtractCursorAsync(GetTopGamesResponse context)
+        => Task.FromResult(context.Pagination.Cursor);
 }
