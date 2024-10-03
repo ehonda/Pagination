@@ -33,10 +33,12 @@ var provider = services.BuildServiceProvider();
 // ------------------------------------------------------------------------------------------------------------------ //
 
 var gamesClient = provider.GetRequiredService<GamesClient>();
-// TODO: Improve ux, fluent builder like for this
-var handler = new TwitchPagination.Games.V4.Composite.TopGamesPaginationHandler(gamesClient);
+// // TODO: Improve ux, fluent builder like for this
+// var handler = new TwitchPagination.Games.V4.Composite.TopGamesPaginationHandler(gamesClient);
+//
+// var top500 = await handler.GetAllItemsAsync().Take(500).ToListAsync();
 
-var top500 = await handler.GetAllItemsAsync().Take(500).ToListAsync();
+var top500 = await gamesClient.GetAllTopGames(100).Take(500).ToListAsync();
 
 var data = top500
     .Select(x => x.Name)

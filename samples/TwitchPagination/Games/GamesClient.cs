@@ -1,6 +1,8 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Ardalis.GuardClauses;
+using TwitchPagination.Games.V4;
+using TwitchPagination.Games.V4.Composite;
 
 namespace TwitchPagination.Games;
 
@@ -35,8 +37,22 @@ public class GamesClient
         return await response.Content.ReadAsStringAsync();
     }
     
+    public IAsyncEnumerable<Game> GetAllTopGames(int first = 10)
+    {
+        var paginationHandler = new CursorBased.V4.Composite
+                .PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
+            .WithPageRetriever(new PageRetriever(this))
+            .WithCursorExtractor(new CursorExtractor())
+            .WithItemExtractor(new ItemExtractor())
+            .Build();
+
+        return paginationHandler.GetAllItemsAsync();
+    }
+    
     public async Task<GetTopGamesResponse> GetTopGames(int first = 10, string? cursor = null)
     {
+        Guard.Against.OutOfRange(first, nameof(first), 1, 100);
+
         // TODO: Improve query building
         var query = cursor is null
             ? $"?first={first}"
