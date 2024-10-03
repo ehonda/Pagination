@@ -1,5 +1,8 @@
+using CursorBased.V4.Composite.CursorExtractors;
 using JetBrains.Annotations;
 using Sequential.V2.Composite;
+using Sequential.V2.Composite.ItemExtractors;
+using Sequential.V2.Composite.PageRetrievers;
 
 namespace CursorBased.V4.Composite;
 

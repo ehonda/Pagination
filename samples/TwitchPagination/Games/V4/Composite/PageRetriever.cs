@@ -1,4 +1,5 @@
 using Sequential.V2.Composite;
+using Sequential.V2.Composite.PageRetrievers;
 
 namespace TwitchPagination.Games.V4.Composite;
 

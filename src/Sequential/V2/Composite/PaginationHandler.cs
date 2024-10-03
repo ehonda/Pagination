@@ -1,5 +1,5 @@
 using JetBrains.Annotations;
-using Sequential.Composite;
+using Sequential.V2.Composite.PageRetrievers;
 
 namespace Sequential.V2.Composite;
 
@@ -9,29 +9,29 @@ public class PaginationHandler<TPaginationContext, TItem>
     where TPaginationContext : class
 {
     private readonly IPageRetriever<TPaginationContext> _pageRetriever;
-    private readonly INextPageChecker<TPaginationContext> _nextPageChecker;
-    private readonly IItemExtractor<TPaginationContext, TItem> _itemExtractor;
+    private readonly NextPageCheckers.INextPageChecker<TPaginationContext> _nextPageChecker;
+    private readonly ItemExtractors.IItemExtractor<TPaginationContext, TItem> _itemExtractor;
 
     public PaginationHandler(
         IPageRetriever<TPaginationContext> pageRetriever,
-        INextPageChecker<TPaginationContext> nextPageChecker,
-        IItemExtractor<TPaginationContext, TItem> itemExtractor)
+        NextPageCheckers.INextPageChecker<TPaginationContext> nextPageChecker,
+        ItemExtractors.IItemExtractor<TPaginationContext, TItem> itemExtractor)
     {
         _pageRetriever = pageRetriever;
         _nextPageChecker = nextPageChecker;
         _itemExtractor = itemExtractor;
     }
-    
+
     protected override Task<TPaginationContext> GetPageAsync(
         TPaginationContext? context,
         CancellationToken cancellationToken = default)
         => _pageRetriever.GetAsync(context, cancellationToken);
-    
+
     protected override Task<bool> NextPageExistsAsync(
         TPaginationContext context,
         CancellationToken cancellationToken = default)
         => _nextPageChecker.NextPageExistsAsync(context, cancellationToken);
-    
+
     protected override IAsyncEnumerable<TItem> ExtractItemsAsync(
         TPaginationContext context,
         CancellationToken cancellationToken = default)

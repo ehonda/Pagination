@@ -1,4 +1,4 @@
-namespace CursorBased.V4.Composite;
+namespace CursorBased.V4.Composite.CursorExtractors;
 
 public interface ICursorExtractor<in TPaginationContext, TCursor>
 {

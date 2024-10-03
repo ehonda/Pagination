@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Sequential.V2.Composite;
+namespace Sequential.V2.Composite.ItemExtractors;
 
 [PublicAPI]
 public interface IItemExtractor<in TPaginationContext, out TItem>

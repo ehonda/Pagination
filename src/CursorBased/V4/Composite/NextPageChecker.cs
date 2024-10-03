@@ -1,9 +1,10 @@
+using CursorBased.V4.Composite.CursorExtractors;
 using Sequential.Composite;
 
 namespace CursorBased.V4.Composite;
 
 public class NextPageChecker<TPaginationContext, TCursor>
-    : Sequential.V2.Composite.INextPageChecker<TPaginationContext>
+    : Sequential.V2.Composite.NextPageCheckers.INextPageChecker<TPaginationContext>
 {
     private readonly ICursorExtractor<TPaginationContext, TCursor> _cursorExtractor;
 

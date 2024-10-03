@@ -1,4 +1,5 @@
 using CursorBased.V4.Composite;
+using CursorBased.V4.Composite.CursorExtractors;
 
 namespace TwitchPagination.Games.V4;
 

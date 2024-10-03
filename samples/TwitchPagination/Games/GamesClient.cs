@@ -49,6 +49,19 @@ public class GamesClient
         return paginationHandler.GetAllItemsAsync();
     }
     
+    public IAsyncEnumerable<Game> GetAllTopGamesByFunctions(int first = 10)
+    {
+        // TODO: Nicer pagination handler builder creation
+        var paginationHandler = new CursorBased.V4.Composite
+                .PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
+            .WithPageRetriever((context, _) => GetTopGames(100, context?.Pagination.Cursor))
+            .WithCursorExtractor(context => context.Pagination.Cursor)
+            .WithItemExtractor(context => context.Data)
+            .Build();
+
+        return paginationHandler.GetAllItemsAsync();
+    }
+    
     public async Task<GetTopGamesResponse> GetTopGames(int first = 10, string? cursor = null)
     {
         Guard.Against.OutOfRange(first, nameof(first), 1, 100);

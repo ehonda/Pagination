@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Sequential.V2.Composite;
+namespace Sequential.V2.Composite.PageRetrievers;
 
 [PublicAPI]
 public interface IPageRetriever<TPaginationContext>
