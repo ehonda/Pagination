@@ -48,6 +48,12 @@ public class GamesClient
         return paginationHandler.GetAllItemsAsync();
     }
     
+    /// <summary>
+    /// <b>📖 EXAMPLE:</b> Direct usage of the <see cref="PaginationHandler{TPaginationContext, TCursor, TItem}">
+    /// CursorBased.Composite.PaginationHandler</see> by using the
+    /// <see cref="PaginationHandlerBuilder{TPaginationContext, TCursor, TItem}">builder</see> and specifying the
+    /// components via lambdas.
+    /// </summary>
     public IAsyncEnumerable<Game> GetAllTopGamesByFunctions(int first = 10)
     {
         // TODO: Nicer pagination handler builder creation

@@ -1,9 +1,13 @@
 using CursorBased;
+using JetBrains.Annotations;
 
 namespace TwitchPagination.Games;
 
-// This looks very clean as well, we only need to implement two trivial methods, we drop the
-// implementation of a pagination context and new up a cursor extractor instead
+/// <summary>
+/// <b>📖 EXAMPLE:</b> Direct implementation of a pagination handler via the abstract base class
+/// <see cref="PaginationHandler{TPaginationContext, TCursor, TItem}">CursorBased.PaginationHandler</see>.
+/// </summary>
+[UsedImplicitly]
 public class TopGamesPaginationHandler : PaginationHandler<
     GetTopGamesResponse, string, Game>
 {

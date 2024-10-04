@@ -1,7 +1,13 @@
+using JetBrains.Annotations;
 using Sequential.Composite.PageRetrievers;
 
 namespace TwitchPagination.Games.Composite;
 
+/// <summary>
+/// <b>📖 EXAMPLE:</b> Implementation of a page retriever to use in the
+/// <see cref="TopGamesPaginationHandler">composite pagination handler example</see>.
+/// </summary>
+[UsedImplicitly]
 public class PageRetriever : IPageRetriever<GetTopGamesResponse>
 {
     private readonly GamesClient _client;
