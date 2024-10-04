@@ -1,5 +1,6 @@
 ﻿using Core;
 using Sequential;
+using Sequential.Deprecated;
 
 namespace DirectImplementation;
 

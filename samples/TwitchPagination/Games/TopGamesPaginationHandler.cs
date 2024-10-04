@@ -2,11 +2,10 @@ using CursorBased;
 
 namespace TwitchPagination.Games;
 
-public class TopGamesPaginationHandler : CursorBased.PaginationHandler<
-    GetTopGamesResponse,
-    GetTopGamesResponse,
-    string,
-    Game>
+// This looks very clean as well, we only need to implement two trivial methods, we drop the
+// implementation of a pagination context and new up a cursor extractor instead
+public class TopGamesPaginationHandler : PaginationHandler<
+    GetTopGamesResponse, string, Game>
 {
     private readonly GamesClient _client;
 
@@ -14,20 +13,15 @@ public class TopGamesPaginationHandler : CursorBased.PaginationHandler<
     {
         _client = client;
     }
-    
-    protected override Task<GetTopGamesResponse> GetPageAsync(PaginationContext<GetTopGamesResponse, string>? context,
-        CancellationToken cancellationToken = default)
-        // This is nice
-        // TODO: Make `first` configurable
-        => _client.GetTopGames(100, context?.Cursor);
 
-    protected override Task<PaginationContext<GetTopGamesResponse, string>> ExtractContextAsync(
-        GetTopGamesResponse page, CancellationToken cancellationToken = default)
-        // Awkward
-        => Task.FromResult(new PaginationContext<GetTopGamesResponse, string>(page, page.Pagination.Cursor));
-
-    protected override IAsyncEnumerable<Game> ExtractItemsAsync(PaginationContext<GetTopGamesResponse, string> context,
+    protected override async Task<GetTopGamesResponse> GetPageAsync(GetTopGamesResponse? context,
         CancellationToken cancellationToken = default)
-        // Also nice
-        => context.Page.Data.ToAsyncEnumerable();
+        => await _client.GetTopGames(100, context?.Pagination.Cursor);
+
+    protected override IAsyncEnumerable<Game> ExtractItemsAsync(GetTopGamesResponse context,
+        CancellationToken cancellationToken = default)
+        => context.Data.ToAsyncEnumerable();
+
+    protected override Task<string?> ExtractCursorAsync(GetTopGamesResponse context)
+        => Task.FromResult(context.Pagination.Cursor);
 }

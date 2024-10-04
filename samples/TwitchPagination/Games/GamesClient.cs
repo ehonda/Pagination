@@ -1,8 +1,8 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Ardalis.GuardClauses;
-using TwitchPagination.Games.V4;
-using TwitchPagination.Games.V4.Composite;
+using CursorBased.Composite;
+using TwitchPagination.Games.Composite;
 
 namespace TwitchPagination.Games;
 
@@ -39,8 +39,7 @@ public class GamesClient
     
     public IAsyncEnumerable<Game> GetAllTopGames(int first = 10)
     {
-        var paginationHandler = new CursorBased.V4.Composite
-                .PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
+        var paginationHandler = new PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
             .WithPageRetriever(new PageRetriever(this))
             .WithCursorExtractor(new CursorExtractor())
             .WithItemExtractor(new ItemExtractor())
@@ -52,8 +51,7 @@ public class GamesClient
     public IAsyncEnumerable<Game> GetAllTopGamesByFunctions(int first = 10)
     {
         // TODO: Nicer pagination handler builder creation
-        var paginationHandler = new CursorBased.V4.Composite
-                .PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
+        var paginationHandler = new PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
             .WithPageRetriever((context, _) => GetTopGames(100, context?.Pagination.Cursor))
             .WithCursorExtractor(context => context.Pagination.Cursor)
             .WithItemExtractor(context => context.Data)

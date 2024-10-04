@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\CursorBased.Http\CursorBased.Http.csproj" />
+      <ProjectReference Include="..\..\src\CursorBased\CursorBased.csproj" />
     </ItemGroup>
 
 </Project>

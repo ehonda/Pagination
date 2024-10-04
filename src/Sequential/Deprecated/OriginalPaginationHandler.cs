@@ -2,10 +2,9 @@ using System.Runtime.CompilerServices;
 using Core;
 using JetBrains.Annotations;
 
-namespace Sequential;
+namespace Sequential.Deprecated;
 
 // TODO: Probably move this to it's own package, e.g. Sequential
-// TODO: Fix xml doc, it's not accurate anymore
 
 /// <summary>
 /// Retrieves all items from a paginated resource by sequentially going from one page to the next, as long as more pages
@@ -32,22 +31,27 @@ namespace Sequential;
 /// <typeparam name="TTransformedPage">The type of the transformed pages.</typeparam>
 /// <typeparam name="TItem">The type of the items.</typeparam>
 [PublicAPI]
-public abstract class PaginationHandler<TPaginationContext, TItem> : IPaginationHandler<TItem>
-    // TODO: It would be nicer to use an option type in the places where there might not be a context (instead of null
-    //       like we do now), because we would not require this restriction.
-    where TPaginationContext : class
+public abstract class OriginalPaginationHandler<TPage, TTransformedPage, TItem> : IPaginationHandler<TItem>
 {
     /// <inheritdoc />
     public async IAsyncEnumerable<TItem> GetAllItemsAsync(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        TPaginationContext? context = null;
+        var currentPage = await GetFirstPageAsync(cancellationToken);
+        var transformedCurrentPage = await TransformPageAsync(currentPage, cancellationToken);
 
-        while (context is null || await NextPageExistsAsync(context, cancellationToken))
+        await foreach (var item in ExtractItemsAsync(transformedCurrentPage, cancellationToken))
         {
-            context = await GetPageAsync(context, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return item;
+        }
 
-            await foreach (var item in ExtractItemsAsync(context, cancellationToken))
+        while (await NextPageExistsAsync(transformedCurrentPage, cancellationToken))
+        {
+            currentPage = await GetNextPageAsync(transformedCurrentPage, cancellationToken);
+            transformedCurrentPage = await TransformPageAsync(currentPage, cancellationToken);
+
+            await foreach (var item in ExtractItemsAsync(transformedCurrentPage, cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return item;
@@ -60,10 +64,19 @@ public abstract class PaginationHandler<TPaginationContext, TItem> : IPagination
     /// </summary>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>The first page.</returns>
-    protected abstract Task<TPaginationContext> GetPageAsync(
-        TPaginationContext? context,
-        CancellationToken cancellationToken = default);
-    
+    protected abstract Task<TPage> GetFirstPageAsync(CancellationToken cancellationToken = default);
+
+    // TODO: Should this be its own method, or should it be implicit in TPage, i.e. we always operate on transformed pages?
+    /// <summary>
+    /// Transforms the given <paramref name="page"/>, typically to extract information about the next page, as well as
+    /// the items on the page.
+    /// </summary>
+    /// <param name="page">The page to transform.</param>
+    /// <param name="cancellationToken">The cancellation token to use.</param>
+    /// <returns>The transformed page.</returns>
+    protected abstract Task<TTransformedPage> TransformPageAsync(
+        TPage page, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Checks whether a next page exists.
     /// </summary>
@@ -71,7 +84,16 @@ public abstract class PaginationHandler<TPaginationContext, TItem> : IPagination
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>Whether a next page exists.</returns>
     protected abstract Task<bool> NextPageExistsAsync(
-        TPaginationContext context, CancellationToken cancellationToken = default);
+        TTransformedPage currentPage, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves the next page.
+    /// </summary>
+    /// <param name="currentPage">The current page.</param>
+    /// <param name="cancellationToken">The cancellation token to use.</param>
+    /// <returns>The next page.</returns>
+    protected abstract Task<TPage> GetNextPageAsync(
+        TTransformedPage currentPage, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Extracts the items from the given <paramref name="page"/>.
@@ -80,5 +102,5 @@ public abstract class PaginationHandler<TPaginationContext, TItem> : IPagination
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>An async enumerable of the items.</returns>
     protected abstract IAsyncEnumerable<TItem> ExtractItemsAsync(
-        TPaginationContext context, CancellationToken cancellationToken = default);
+        TTransformedPage page, CancellationToken cancellationToken = default);
 }

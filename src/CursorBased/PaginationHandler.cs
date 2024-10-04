@@ -1,12 +1,15 @@
-﻿namespace CursorBased;
+using Sequential;
 
-public abstract class PaginationHandler<TPage, TTransformedPage, TCursor, TItem>
-    : Sequential.PaginationHandler<TPage, PaginationContext<TTransformedPage, TCursor>, TItem>
+namespace CursorBased;
+
+public abstract class PaginationHandler<TPaginationContext, TCursor, TItem>
+    : PaginationHandler<TPaginationContext, TItem>
+    where TPaginationContext : class
 {
-    private readonly NextPageChecker<TTransformedPage, TCursor> _nextPageChecker = new();
-
-    protected override Task<bool> NextPageExistsAsync(
-        PaginationContext<TTransformedPage, TCursor> context,
+    protected override async Task<bool> NextPageExistsAsync(
+        TPaginationContext context,
         CancellationToken cancellationToken = default)
-        => _nextPageChecker.NextPageExistsAsync(context, cancellationToken);
+        => await ExtractCursorAsync(context) is not null;
+    
+    protected abstract Task<TCursor?> ExtractCursorAsync(TPaginationContext context);
 }

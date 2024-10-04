@@ -1,14 +1,13 @@
 using Ardalis.GuardClauses;
-using Core;
 using OffsetBased.ItemExtractionHandling;
 using OffsetBased.PageRequestGenerationHandling;
 using OffsetBased.PaginationInformationHandling;
-using Sequential;
+using Sequential.Deprecated;
 
 namespace OffsetBased;
 
 /// <summary>
-/// A pagination handler for offset-based pagination.
+///     A pagination handler for offset-based pagination.
 /// </summary>
 /// <typeparam name="TTransformedPage">
 ///     The type of the transformed page after pagination information extraction.
@@ -24,7 +23,8 @@ public class OffsetBasedOriginalPaginationHandler<TTransformedPage, TItem>
     private readonly IItemExtractor<TTransformedPage, TItem> _itemExtractor;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OffsetBasedOriginalPaginationHandler{TTransformedPage,TItem}"/> class.
+    ///     Initializes a new instance of the <see cref="OffsetBasedOriginalPaginationHandler{TTransformedPage,TItem}" />
+    ///     class.
     /// </summary>
     /// <param name="pageRequestGenerator">Used to generate requests for the pages.</param>
     /// <param name="paginationInformationExtractor">Used to extract pagination information from the pages.</param>
@@ -43,8 +43,8 @@ public class OffsetBasedOriginalPaginationHandler<TTransformedPage, TItem>
 
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> GetFirstPageAsync(
-        CancellationToken cancellationToken = default)
-    // TODO: Throw If Not Successful
+            CancellationToken cancellationToken = default)
+        // TODO: Throw If Not Successful
         => await _httpClient
             .SendAsync(
                 await _pageRequestGenerator.GenerateAsync(_httpClient.BaseAddress, 1, cancellationToken),
@@ -52,8 +52,8 @@ public class OffsetBasedOriginalPaginationHandler<TTransformedPage, TItem>
 
     /// <inheritdoc />
     protected override async Task<HttpResponseMessage> GetNextPageAsync(
-        TransformedPageWithPaginationInformation<TTransformedPage> currentPage,
-        CancellationToken cancellationToken = default)
+            TransformedPageWithPaginationInformation<TTransformedPage> currentPage,
+            CancellationToken cancellationToken = default)
         // TODO: Throw If Not Successful
         => await _httpClient
             .SendAsync(
