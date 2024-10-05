@@ -1,5 +1,5 @@
 ﻿using Core.Fluent;
-using OffsetBased.Fluent;
+using Deprecated.OffsetBased.Fluent;
 
 namespace OffsetBased.Tests.Fluent;
 

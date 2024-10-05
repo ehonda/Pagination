@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{746111D7-1F2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{0F037325-FD6C-4299-87FF-AEE8AF420F22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OffsetBased", "src\OffsetBased\OffsetBased.csproj", "{B5C245B2-3BE1-4025-8D12-5374C1BD84C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deprecated.OffsetBased", "src\Deprecated.OffsetBased\Deprecated.OffsetBased.csproj", "{B5C245B2-3BE1-4025-8D12-5374C1BD84C5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C4251316-B827-4887-9307-A6E1EB3CDF98}"
 EndProject

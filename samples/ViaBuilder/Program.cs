@@ -1,5 +1,5 @@
 using Core;
-using OffsetBased.Fluent;
+using Deprecated.OffsetBased.Fluent;
 using ViaBuilder;
 
 var builder = WebApplication.CreateBuilder(args);

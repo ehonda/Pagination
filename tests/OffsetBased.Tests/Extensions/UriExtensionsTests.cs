@@ -1,7 +1,7 @@
 using System.Web;
 using FluentAssertions;
 using NUnit.Framework;
-using OffsetBased.Utilities;
+using Deprecated.OffsetBased.Utilities;
 using Relaxdays.TestUtilities.Scenarios;
 
 namespace OffsetBased.Tests.Extensions;
