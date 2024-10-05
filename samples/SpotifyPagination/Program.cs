@@ -34,8 +34,14 @@ var provider = services.BuildServiceProvider();
 
 var gamesClient = provider.GetRequiredService<ArtistsClient>();
 
-var graceJones = await gamesClient.GetGraceJones();
-Console.WriteLine(graceJones);
+// var graceJones = await gamesClient.GetGraceJones();
+// Console.WriteLine(graceJones);
+
+var albums = await gamesClient.GetGraceJonesAlbumNames(50);
+foreach (var album in albums)
+{
+    Console.WriteLine(album);
+}
 
 // var top500 = await gamesClient.GetAllTopGamesByFunctions(100).Take(500).ToListAsync();
 //
