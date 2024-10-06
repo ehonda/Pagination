@@ -43,6 +43,7 @@ public class ArtistsClient
         return names;
     }
     
+    // TODO: Make it harder to accidentally switch the order of `limit` and `offset`
     public async Task<GetAlbumsResponse> GetAlbums(string artistId, int limit = 10, int offset = 0)
     {
         Guard.Against.OutOfRange(limit, nameof(limit), 1, 50);

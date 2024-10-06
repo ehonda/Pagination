@@ -34,9 +34,18 @@ var provider = services.BuildServiceProvider();
 
 var artistsClient = provider.GetRequiredService<ArtistsClient>();
 
-var albums = await artistsClient.GetAlbums(Ids.GraceJones, 2, 10);
+var handler = new AlbumsPaginationHandler(artistsClient);
 
-foreach (var album in albums.Items)
+var albums = await handler.GetAllItemsAsync().ToListAsync();
+
+foreach (var album in albums)
 {
     Console.WriteLine(album.Name);
 }
+
+// var albums = await artistsClient.GetAlbums(Ids.GraceJones, 2, 10);
+//
+// foreach (var album in albums.Items)
+// {
+//     Console.WriteLine(album.Name);
+// }
