@@ -1,10 +1,11 @@
+using System.Net.Http.Json;
 using System.Text.Json;
+using Ardalis.GuardClauses;
 
 namespace SpotifyPagination.Artists;
 
 public class ArtistsClient
 {
-    private const string GraceJonesId = "2f9ZiYA2ic1r1voObUimdd";
 
     private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web);
 
@@ -19,7 +20,7 @@ public class ArtistsClient
     {
         // TODO: Why do we have to specify `artits/{id}...` here? If we just use `{id}`, the `.../artists` suffix of the
         //       base address is eaten.
-        var response = await _httpClient.GetAsync($"artists/{GraceJonesId}");
+        var response = await _httpClient.GetAsync($"artists/{Ids.GraceJones}");
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsStringAsync();
@@ -29,7 +30,7 @@ public class ArtistsClient
     {
         // TODO: Why do we have to specify `artits/{id}...` here? If we just use `{id}`, the `.../artists` suffix of the
         //       base address is eaten.
-        var response = await _httpClient.GetAsync($"artists/{GraceJonesId}/albums?limit={limit}");
+        var response = await _httpClient.GetAsync($"artists/{Ids.GraceJones}/albums?limit={limit}");
         response.EnsureSuccessStatusCode();
 
         var names = (await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync()))
@@ -40,5 +41,16 @@ public class ArtistsClient
             .ToList();
         
         return names;
+    }
+    
+    public async Task<GetAlbumsResponse> GetAlbums(string artistId, int limit = 10, int offset = 0)
+    {
+        Guard.Against.OutOfRange(limit, nameof(limit), 1, 50);
+        Guard.Against.Negative(offset);
+        
+        var response = await _httpClient.GetAsync($"artists/{artistId}/albums?limit={limit}&offset={offset}");
+        response.EnsureSuccessStatusCode();
+
+        return (await response.Content.ReadFromJsonAsync<GetAlbumsResponse>(JsonSerializerOptions))!;
     }
 }

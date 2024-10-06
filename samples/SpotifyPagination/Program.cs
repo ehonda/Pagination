@@ -32,24 +32,11 @@ var provider = services.BuildServiceProvider();
 //                                                      Usage                                                         //
 // ------------------------------------------------------------------------------------------------------------------ //
 
-var gamesClient = provider.GetRequiredService<ArtistsClient>();
+var artistsClient = provider.GetRequiredService<ArtistsClient>();
 
-// var graceJones = await gamesClient.GetGraceJones();
-// Console.WriteLine(graceJones);
+var albums = await artistsClient.GetAlbums(Ids.GraceJones, 2, 10);
 
-var albums = await gamesClient.GetGraceJonesAlbumNames(50);
-foreach (var album in albums)
+foreach (var album in albums.Items)
 {
-    Console.WriteLine(album);
+    Console.WriteLine(album.Name);
 }
-
-// var top500 = await gamesClient.GetAllTopGamesByFunctions(100).Take(500).ToListAsync();
-//
-// var data = top500
-//     .Select(x => x.Name)
-//     .Zip(Enumerable.Range(1, 500));
-//
-// foreach (var (name, index) in data)
-// {
-//     Console.WriteLine($"{index}\t- {name}");
-// }
