@@ -3,6 +3,15 @@ using Sequential.Composite.NextPageCheckers;
 
 namespace CursorBased.Composite;
 
+public class NextPageChecker<TPaginationContext>
+    : NextPageChecker<TPaginationContext, string>
+{
+    public NextPageChecker(ICursorExtractor<TPaginationContext> cursorExtractor)
+        : base(cursorExtractor)
+    {
+    }
+}
+
 public class NextPageChecker<TPaginationContext, TCursor>
     : INextPageChecker<TPaginationContext>
 {

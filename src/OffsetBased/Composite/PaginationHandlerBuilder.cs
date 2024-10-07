@@ -6,6 +6,10 @@ using Sequential.Composite.PageRetrievers;
 
 namespace OffsetBased.Composite;
 
+public class PaginationHandlerBuilder<TPaginationContext, TItem>
+    : PaginationHandlerBuilder<TPaginationContext, int, TItem>
+    where TPaginationContext : class;
+
 public class PaginationHandlerBuilder<TPaginationContext, TIndex, TItem>
     where TPaginationContext : class
     where TIndex : INumber<TIndex>

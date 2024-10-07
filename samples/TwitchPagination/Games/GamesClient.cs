@@ -57,7 +57,7 @@ public class GamesClient
     public IAsyncEnumerable<Game> GetAllTopGamesByFunctions(int first = 10)
     {
         // TODO: Nicer pagination handler builder creation
-        var paginationHandler = new PaginationHandlerBuilder<GetTopGamesResponse, string, Game>()
+        var paginationHandler = new PaginationHandlerBuilder<GetTopGamesResponse, Game>()
             .WithPageRetriever((context, _) => GetTopGames(100, context?.Pagination.Cursor))
             .WithCursorExtractor(context => context.Pagination.Cursor)
             .WithItemExtractor(context => context.Data)

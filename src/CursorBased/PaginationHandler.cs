@@ -1,9 +1,11 @@
-using Sequential;
-
 namespace CursorBased;
 
+public abstract class PaginationHandler<TPaginationContext, TItem>
+    : PaginationHandler<TPaginationContext, string, TItem>
+    where TPaginationContext : class;        
+
 public abstract class PaginationHandler<TPaginationContext, TCursor, TItem>
-    : PaginationHandler<TPaginationContext, TItem>
+    : Sequential.PaginationHandler<TPaginationContext, TItem>
     where TPaginationContext : class
 {
     protected override async Task<bool> NextPageExistsAsync(

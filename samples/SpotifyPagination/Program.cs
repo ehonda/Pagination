@@ -3,6 +3,7 @@ using OffsetBased;
 using OffsetBased.Composite;
 using SpotifyPagination;
 using SpotifyPagination.Artists;
+using SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 using SpotifyPagination.Authorization;
 
 // ------------------------------------------------------------------------------------------------------------------ //
@@ -40,13 +41,13 @@ var artistsClient = provider.GetRequiredService<ArtistsClient>();
 
 // var handler = new AlbumsPaginationHandler(artistsClient);
 
-// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
+// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, Album>()
 //     .WithPageRetriever(new PageRetriever(artistsClient))
 //     .WithIndexDataExtractor(new IndexDataExtractor())
 //     .WithItemExtractor(new ItemExtractor())
 //     .Build();
 
-// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
+// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, Album>()
 //     .WithPageRetriever(async (context, _) =>
 //     {
 //         const int limit = 10;

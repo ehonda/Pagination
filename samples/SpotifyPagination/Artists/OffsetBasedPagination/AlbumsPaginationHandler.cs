@@ -2,7 +2,7 @@ using OffsetBased;
 
 namespace SpotifyPagination.Artists.OffsetBasedPagination;
 
-public class AlbumsPaginationHandler : PaginationHandler<GetAlbumsResponse, int, Album>
+public class AlbumsPaginationHandler : PaginationHandler<GetAlbumsResponse, Album>
 {
     private readonly ArtistsClient _client;
 

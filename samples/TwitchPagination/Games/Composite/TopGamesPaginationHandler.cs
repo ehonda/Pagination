@@ -8,7 +8,7 @@ namespace TwitchPagination.Games.Composite;
 /// <see cref="PaginationHandler{TPaginationContext, TCursor, TItem}">CursorBased.Composite.PaginationHandler</see>.
 /// </summary>
 [UsedImplicitly]
-public class TopGamesPaginationHandler : PaginationHandler<GetTopGamesResponse, string, Game>
+public class TopGamesPaginationHandler : PaginationHandler<GetTopGamesResponse, Game>
 {
     public TopGamesPaginationHandler(GamesClient client)
         : base(new PageRetriever(client), new CursorExtractor(), new ItemExtractor())

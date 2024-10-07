@@ -3,7 +3,7 @@ using OffsetBased.Composite.IndexDataExtractors;
 
 namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 
-public class IndexDataExtractor : IIndexDataExtractor<GetAlbumsResponse, int>
+public class IndexDataExtractor : IIndexDataExtractor<GetAlbumsResponse>
 {
     public Task<IndexData<int>> ExtractIndexDataAsync(GetAlbumsResponse context,
         CancellationToken cancellationToken = default) 

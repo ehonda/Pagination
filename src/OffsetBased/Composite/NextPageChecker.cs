@@ -4,6 +4,16 @@ using Sequential.Composite.NextPageCheckers;
 
 namespace OffsetBased.Composite;
 
+public class NextPageChecker<TPaginationContext>
+    : NextPageChecker<TPaginationContext, int>
+    where TPaginationContext : class
+{
+    public NextPageChecker(IIndexDataExtractor<TPaginationContext, int> indexDataExtractor)
+        : base(indexDataExtractor)
+    {
+    }
+}
+
 public class NextPageChecker<TPaginationContext, TIndex> : INextPageChecker<TPaginationContext>
     where TPaginationContext : class
     where TIndex : INumber<TIndex>

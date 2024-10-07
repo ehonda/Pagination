@@ -5,6 +5,10 @@ using Sequential.Composite.PageRetrievers;
 
 namespace CursorBased.Composite;
 
+public class PaginationHandlerBuilder<TPaginationContext, TItem>
+    : PaginationHandlerBuilder<TPaginationContext, string, TItem>
+    where TPaginationContext : class;
+
 public class PaginationHandlerBuilder<TPaginationContext, TCursor, TItem>
     where TPaginationContext : class
 {

@@ -2,7 +2,11 @@ using System.Numerics;
 
 namespace OffsetBased.Composite.IndexDataExtractors;
 
-public interface IIndexDataExtractor<TPaginationContext, TIndex>
+public interface IIndexDataExtractor<in TPaginationContext>
+    : IIndexDataExtractor<TPaginationContext, int>
+    where TPaginationContext : class;
+
+public interface IIndexDataExtractor<in TPaginationContext, TIndex>
     where TPaginationContext : class
     where TIndex : INumber<TIndex>
 {
