@@ -3,18 +3,24 @@ using Sequential;
 
 namespace OffsetBased;
 
-public abstract class PaginationHandler<TPaginationContext, TNumber, TItem>
+// TODO: Improve naming for `TNumber`
+public abstract class PaginationHandler<TPaginationContext, TIndex, TItem>
     : PaginationHandler<TPaginationContext, TItem>
     where TPaginationContext : class
-    where TNumber : INumber<TNumber>
+    where TIndex : INumber<TIndex>
 {
     protected override async Task<bool> NextPageExistsAsync(
-        TPaginationContext context,
-        CancellationToken cancellationToken = default)
+            TPaginationContext context,
+            CancellationToken cancellationToken = default)
+    {
+        var indexData = await ExtractIndexDataAsync(context, cancellationToken);
+            
         // TODO: Is `<` the correct choice here?
-        => await ExtractOffsetAsync(context) < await ExtractTotalAsync(context);
+        return indexData.Offset < indexData.Total;
+    }
 
-    protected abstract Task<TNumber> ExtractOffsetAsync(TPaginationContext context);
-    
-    protected abstract Task<TNumber> ExtractTotalAsync(TPaginationContext context);
+    // TODO: Should this be one method, like `ExtractOffsetAndTotalAsync`?
+    protected abstract Task<IndexData<TIndex>> ExtractIndexDataAsync(
+        TPaginationContext context,
+        CancellationToken cancellationToken = default);
 }

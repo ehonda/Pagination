@@ -25,9 +25,7 @@ public class AlbumsPaginationHandler : PaginationHandler<GetAlbumsResponse, int,
         CancellationToken cancellationToken = default)
         => context.Items.ToAsyncEnumerable();
 
-    protected override Task<int> ExtractOffsetAsync(GetAlbumsResponse context)
-        => Task.FromResult(context.Offset);
-
-    protected override Task<int> ExtractTotalAsync(GetAlbumsResponse context)
-        => Task.FromResult(context.Total);
+    protected override Task<IndexData<int>> ExtractIndexDataAsync(GetAlbumsResponse context,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(new IndexData<int>(context.Offset, context.Total));
 }

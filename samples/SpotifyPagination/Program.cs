@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using OffsetBased;
+using OffsetBased.Composite;
 using SpotifyPagination;
 using SpotifyPagination.Artists;
+using SpotifyPagination.Artists.Composite;
 using SpotifyPagination.Authorization;
 
 // ------------------------------------------------------------------------------------------------------------------ //
@@ -34,7 +37,25 @@ var provider = services.BuildServiceProvider();
 
 var artistsClient = provider.GetRequiredService<ArtistsClient>();
 
-var handler = new AlbumsPaginationHandler(artistsClient);
+// var handler = new AlbumsPaginationHandler(artistsClient);
+
+// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
+//     .WithPageRetriever(new PageRetriever(artistsClient))
+//     .WithIndexDataExtractor(new IndexDataExtractor())
+//     .WithItemExtractor(new ItemExtractor())
+//     .Build();
+
+var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
+    .WithPageRetriever(async (context, _) =>
+    {
+        const int limit = 10;
+        var offset = context?.Offset + limit ?? 0;
+
+        return await artistsClient.GetAlbums(Ids.GraceJones, limit, offset);
+    })
+    .WithIndexDataExtractor(context => new(context.Offset, context.Total))
+    .WithItemExtractor(context => context.Items)
+    .Build();
 
 var albums = await handler.GetAllItemsAsync().ToListAsync();
 
