@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\CursorBased\CursorBased.csproj" />
       <ProjectReference Include="..\..\src\OffsetBased\OffsetBased.csproj" />
     </ItemGroup>
 

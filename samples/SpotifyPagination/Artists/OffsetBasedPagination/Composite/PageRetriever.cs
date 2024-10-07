@@ -1,6 +1,6 @@
 using Sequential.Composite.PageRetrievers;
 
-namespace SpotifyPagination.Artists.Composite;
+namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 
 public class PageRetriever : IPageRetriever<GetAlbumsResponse>
 {

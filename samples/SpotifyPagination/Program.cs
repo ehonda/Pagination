@@ -3,7 +3,6 @@ using OffsetBased;
 using OffsetBased.Composite;
 using SpotifyPagination;
 using SpotifyPagination.Artists;
-using SpotifyPagination.Artists.Composite;
 using SpotifyPagination.Authorization;
 
 // ------------------------------------------------------------------------------------------------------------------ //
@@ -37,6 +36,8 @@ var provider = services.BuildServiceProvider();
 
 var artistsClient = provider.GetRequiredService<ArtistsClient>();
 
+// These are the different offset based use cases
+
 // var handler = new AlbumsPaginationHandler(artistsClient);
 
 // var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
@@ -45,28 +46,25 @@ var artistsClient = provider.GetRequiredService<ArtistsClient>();
 //     .WithItemExtractor(new ItemExtractor())
 //     .Build();
 
-var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
-    .WithPageRetriever(async (context, _) =>
-    {
-        const int limit = 10;
-        var offset = context?.Offset + limit ?? 0;
+// var handler = new PaginationHandlerBuilder<GetAlbumsResponse, int, Album>()
+//     .WithPageRetriever(async (context, _) =>
+//     {
+//         const int limit = 10;
+//         var offset = context?.Offset + limit ?? 0;
+//
+//         return await artistsClient.GetAlbums(Ids.GraceJones, limit, offset);
+//     })
+//     .WithIndexDataExtractor(context => new(context.Offset, context.Total))
+//     .WithItemExtractor(context => context.Items)
+//     .Build();
 
-        return await artistsClient.GetAlbums(Ids.GraceJones, limit, offset);
-    })
-    .WithIndexDataExtractor(context => new(context.Offset, context.Total))
-    .WithItemExtractor(context => context.Items)
-    .Build();
+// var albums = await handler.GetAllItemsAsync().ToListAsync();
 
-var albums = await handler.GetAllItemsAsync().ToListAsync();
+// We can also do cursor based thanks to the `Next` property in the responses
+
+var albums = await artistsClient.GetAlbumsCursorBased(Ids.GraceJones).ToListAsync();
 
 foreach (var album in albums)
 {
     Console.WriteLine(album.Name);
 }
-
-// var albums = await artistsClient.GetAlbums(Ids.GraceJones, 2, 10);
-//
-// foreach (var album in albums.Items)
-// {
-//     Console.WriteLine(album.Name);
-// }

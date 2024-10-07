@@ -1,6 +1,6 @@
 using Sequential.Composite.ItemExtractors;
 
-namespace SpotifyPagination.Artists.Composite;
+namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 
 /// <summary>
 /// <b>📖 EXAMPLE:</b> Implementation of an item extractor to use in the

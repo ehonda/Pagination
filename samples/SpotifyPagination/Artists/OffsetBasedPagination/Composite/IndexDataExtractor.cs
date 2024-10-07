@@ -1,7 +1,7 @@
 using OffsetBased;
 using OffsetBased.Composite.IndexDataExtractors;
 
-namespace SpotifyPagination.Artists.Composite;
+namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 
 public class IndexDataExtractor : IIndexDataExtractor<GetAlbumsResponse, int>
 {
