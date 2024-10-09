@@ -10,9 +10,8 @@ namespace Core;
 public interface IPaginationHandler<out TItem>
 {
     /// <summary>
-    /// Retrieves all items from a paginated resource, using the given <paramref name="httpClient"/>.
+    /// Retrieves all items from a paginated resource.
     /// </summary>
-    /// <param name="httpClient">The http client to use for the requests.</param>
     /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>An async enumerable of all items.</returns>
     IAsyncEnumerable<TItem> GetAllItemsAsync(CancellationToken cancellationToken = default);

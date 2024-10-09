@@ -1,6 +1,0 @@
-@DirectImplementation_HostAddress = http://localhost:5132
-
-GET {{DirectImplementation_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

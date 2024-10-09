@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 
 namespace Sequential;
 
-// TODO: Probably move this to it's own package, e.g. Sequential
 // TODO: Fix xml doc, it's not accurate anymore
 
 /// <summary>
