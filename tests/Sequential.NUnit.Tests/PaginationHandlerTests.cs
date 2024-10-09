@@ -1,6 +1,9 @@
-using Core;
 
-namespace Sequential.Tests;
+using System.ComponentModel;
+using Core;
+using FluentAssertions;
+
+namespace Sequential.NUnit.Tests;
 
 // TODO: Maybe work with indices
 public class EnumeratorPaginationHandler<TItem> : PaginationHandler<IEnumerator<TItem>, TItem>
@@ -88,30 +91,18 @@ public class PaginationHandlerTests
         ];
     }
 
-    public static class CombinedCases
-    {
-        public record Data(List<string> Items, HandlerCases.ConstructorCall ConstructorCall);
-
-        public static IEnumerable<Data> All() => ListCases
-            .All()
-            .SelectMany(items =>
-                HandlerCases
-                    .All()
-                    .Select(constructor => new Data(items, constructor)));
-    }
-
     [Test]
-    [DisplayName("The ListPaginationHandler works")]
-    [MethodDataSource(typeof(CombinedCases), nameof(CombinedCases.All))]
-    public async Task Handler_works(CombinedCases.Data data)
+    public async Task Handler_works(
+        [ValueSource(typeof(ListCases), nameof(ListCases.All))] List<string> items,
+        [ValueSource(typeof(HandlerCases), nameof(HandlerCases.All))] HandlerCases.ConstructorCall constructor)
     {
         // Arrange
-        var handler = data.ConstructorCall(data.Items);
+        var handler = constructor(items);
 
         // Act
         var result = await handler.GetAllItemsAsync().ToListAsync();
 
         // Assert
-        await Assert.That(result).IsEquivalentCollectionTo(data.Items);
+        result.Should().BeEquivalentTo(items);
     }
 }
