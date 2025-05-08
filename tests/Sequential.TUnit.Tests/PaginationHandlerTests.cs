@@ -112,6 +112,6 @@ public class PaginationHandlerTests
         var result = await handler.GetAllItemsAsync().ToListAsync();
 
         // Assert
-        await Assert.That(result).IsEquivalentCollectionTo(data.Items);
+        await Assert.That(result).IsEquivalentTo(data.Items);
     }
 }
