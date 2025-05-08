@@ -1,3 +1,3 @@
-# Relaxdays.Http.Pagination
+# EHonda.Pagination
 
 🚧 WIP 🚧
