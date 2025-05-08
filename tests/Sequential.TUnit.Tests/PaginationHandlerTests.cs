@@ -67,7 +67,7 @@ public class IndexPaginationHandler<TItem> : PaginationHandler<Index, TItem>
 
 public class PaginationHandlerTests
 {
-    public static class ListCases
+    public class ListCases
     {
         public static IEnumerable<List<string>> All() =>
         [
@@ -77,7 +77,7 @@ public class PaginationHandlerTests
         ];
     }
 
-    public static class HandlerCases
+    public class HandlerCases
     {
         public delegate IPaginationHandler<string> ConstructorCall(IEnumerable<string> items);
 
@@ -88,30 +88,20 @@ public class PaginationHandlerTests
         ];
     }
 
-    public static class CombinedCases
-    {
-        public record Data(List<string> Items, HandlerCases.ConstructorCall ConstructorCall);
-
-        public static IEnumerable<Data> All() => ListCases
-            .All()
-            .SelectMany(items =>
-                HandlerCases
-                    .All()
-                    .Select(constructor => new Data(items, constructor)));
-    }
-
     [Test]
     [DisplayName("The ListPaginationHandler works")]
-    [MethodDataSource(typeof(CombinedCases), nameof(CombinedCases.All))]
-    public async Task Handler_works(CombinedCases.Data data)
+    [MatrixDataSource]
+    public async Task Handler_works(
+        [MatrixMethod<ListCases>(nameof(ListCases.All))] List<string> items,
+        [MatrixMethod<HandlerCases>(nameof(HandlerCases.All))] HandlerCases.ConstructorCall constructor)
     {
         // Arrange
-        var handler = data.ConstructorCall(data.Items);
+        var handler = constructor(items);
 
         // Act
         var result = await handler.GetAllItemsAsync().ToListAsync();
 
         // Assert
-        await Assert.That(result).IsEquivalentTo(data.Items);
+        await Assert.That(result).IsEquivalentTo(items);
     }
 }
