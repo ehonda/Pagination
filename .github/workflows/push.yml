@@ -3,12 +3,13 @@
 #   https://github.com/ehonda/EHonda.HelloNuget/blob/eb9bd36a907fb7ca57b6a88df6e935a285517ca4/.github/workflows/auto-release.yml
 #
 # This GitHub Actions workflow, named "Release and publish to nuget.org", is triggered on pushes to the `main` branch.
-# It orchestrates a series of jobs to:
+# It orchestrates a series of jobs for multiple projects within the `src` directory to:
 #   1. Run tests using a reusable workflow.
-#   2. Extract package metadata (version and ID) from the project.
-#   3. Check if the extracted package version already exists on nuget.org.
-#   4. If the package version does not exist, it creates a new GitHub release.
-#   5. Subsequently, it packs the project and publishes the new version to nuget.org.
+#   2. For each specified project:
+#      a. Extract package metadata (version and ID).
+#      b. Check if the extracted package version already exists on nuget.org.
+#      c. If the package version does not exist, create a new GitHub release for that package.
+#      d. Subsequently, pack the project and publish the new version to nuget.org.
 #
 # It originates from this:
 #   https://github.com/ehonda/EHonda.HelloNuget/blob/eb9bd36a907fb7ca57b6a88df6e935a285517ca4/.github/workflows/auto-release.yml
@@ -30,90 +31,107 @@ jobs:
   test:
     uses: ./.github/workflows/dotnet-test.yml
 
-  # TODO: Adjust the hardcoded `src/TestUtilities.Scenarios`, it's wrong for this repo.
-  # This job, "Get package metadata", extracts the package version and package ID
-  # from the project. These values are then made available as outputs
-  # (`package-version` and `package-id`) for use in subsequent jobs.
-  get-package-metadata:
-    name: Get package metadata
+  # This job, "package-pipeline", processes each specified project from the `src` directory.
+  # It uses a matrix strategy to handle each project independently.
+  # For each project, it extracts metadata, checks NuGet.org for existing versions,
+  # and outputs whether a release should proceed.
+  package-pipeline:
+    name: Build & Check ${{ matrix.project_name }}
     runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        # Define the list of projects in src/ to be released.
+        # Assumes project file is src/<project_name>/<project_name>.csproj
+        project_name: [Core, CursorBased, OffsetBased, Sequential]
     outputs:
-      package-version: ${{ steps.get-package-version.outputs.package-version }}
-      package-id: ${{ steps.get-package-id.outputs.package-id }}
+      package_version: ${{ steps.get-metadata.outputs.package-version }}
+      package_id: ${{ steps.get-metadata.outputs.package-id }}
+      should_release: ${{ steps.check-nuget.outputs.should-release }}
+      project_name: ${{ matrix.project_name }} # Pass along for dependent jobs
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9
-      - name: Get package version
-        id: get-package-version
-        run: echo "package-version=$(dotnet build src/TestUtilities.Scenarios --getProperty:PackageVersion)" >> "$GITHUB_OUTPUT"
-      - name: Get package id
-        id: get-package-id
-        run: echo "package-id=$(dotnet build src/TestUtilities.Scenarios --getProperty:PackageId)" >> "$GITHUB_OUTPUT"
+          dotnet-version: 9 # Consider making this configurable if needed
 
-  # This job, "Check nuget.org package exists", determines if the current package version
-  # (obtained from `get-package-metadata`) is already published on nuget.org.
-  # It outputs `should-release` ('true' or 'false') to control whether subsequent
-  # release and publish jobs should run, preventing duplicate version releases.
-  check-nuget-exists:
-    name: Check nuget.org package exists
-    runs-on: ubuntu-latest
-    needs: get-package-metadata
-    outputs:
-      should-release: ${{ steps.check-nuget-exists.outputs.should-release }}
-    steps:
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9
-      - name: Check nuget.org package exists
-        id: check-nuget-exists
-        env:
-          PACKAGE_VERSION: ${{ needs.get-package-metadata.outputs.package-version }}
-          PACKAGE_ID: ${{ needs.get-package-metadata.outputs.package-id }}
+      - name: Get package metadata for ${{ matrix.project_name }}
+        id: get-metadata
         run: |
-          LATEST_PACKAGE=$(nuget list $PACKAGE_ID -Source https://api.nuget.org/v3/index.json)
-          LATEST_VERSION=$(echo $LATEST_PACKAGE | awk '{print $NF}')
-          if [ "$LATEST_VERSION" == "$PACKAGE_VERSION" ]; then
-            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION already exists"
+          PROJECT_FILE_PATH="src/${{ matrix.project_name }}/${{ matrix.project_name }}.csproj"
+          echo "package-version=$(dotnet build $PROJECT_FILE_PATH --getProperty:PackageVersion)" >> "$GITHUB_OUTPUT"
+          echo "package-id=$(dotnet build $PROJECT_FILE_PATH --getProperty:PackageId)" >> "$GITHUB_OUTPUT"
+
+      - name: Check nuget.org package exists for ${{ matrix.project_name }}
+        id: check-nuget
+        env:
+          PACKAGE_VERSION: ${{ steps.get-metadata.outputs.package-version }}
+          PACKAGE_ID: ${{ steps.get-metadata.outputs.package-id }}
+        run: |
+          PKG_ID_LOWER=$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')
+          PKG_VERSION_LOWER=$(echo "$PACKAGE_VERSION" | tr '[:upper:]' '[:lower:]')
+          # Note: NuGet API v3 registration hives (the URL below) are eventually consistent.
+          # A very recently published package might briefly return 404.
+          NUGET_URL="https://api.nuget.org/v3/registration5-semver1/$PKG_ID_LOWER/$PKG_VERSION_LOWER.json"
+          
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$NUGET_URL")
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION already exists on NuGet.org."
             echo "should-release=false" >> $GITHUB_OUTPUT
-          else
-            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION does not exist"
+          elif [ "$HTTP_STATUS" -eq 404 ]; then
+            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION does not exist on NuGet.org."
             echo "should-release=true" >> $GITHUB_OUTPUT
+          else
+            echo -e "\e[31mERROR:\e[0m Failed to check NuGet.org for package $PACKAGE_ID@$PACKAGE_VERSION. HTTP Status: $HTTP_STATUS"
+            echo "Attempting fallback check with 'nuget list'..."
+            # Fallback to original nuget list logic if curl fails unexpectedly
+            # This requires `nuget` CLI to be available; actions/setup-dotnet might not install it by default.
+            # Consider adding a step to install nuget CLI if this fallback is critical.
+            # For now, assuming it might be available or this part is best-effort on error.
+            LATEST_PACKAGE_INFO=$(nuget list "$PACKAGE_ID" -Source https://api.nuget.org/v3/index.json -PreRelease | grep -E "^$PACKAGE_ID $PACKAGE_VERSION ")
+            if [ -n "$LATEST_PACKAGE_INFO" ]; then
+                echo -e "\e[32mINFO (fallback):\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION found via nuget list."
+                echo "should-release=false" >> $GITHUB_OUTPUT
+            else
+                echo -e "\e[32mINFO (fallback):\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION not found via nuget list."
+                echo "should-release=true" >> $GITHUB_OUTPUT # Or false if error implies uncertainty
+            fi
           fi
 
-  # This job, "Create release", creates a new GitHub release for the package.
-  # It only runs if the preceding `check-nuget-exists` job determines that
-  # the current package version does not already exist on nuget.org.
-  # The job requires `contents: write` permission to create the release.
-  # It tags the release with the package version (e.g., "v1.2.3") and auto-generates release notes.
+  # This job, "Create release", creates a new GitHub release for each package that needs updating.
+  # It runs if the `package-pipeline` job for a specific project determines that
+  # the package version does not already exist on nuget.org.
+  # It requires `contents: write` permission to create the release.
+  # It tags the release with `<package-id>/v<package-version>` (e.g., "MyLib.Core-v1.2.3").
   create-release:
-    name: Create release
+    name: Create GitHub Release for ${{ needs.package-pipeline.outputs.project_name }}
     runs-on: ubuntu-latest
     permissions:
-      # Required to create the release
       contents: write
-    needs: [test, get-package-metadata, check-nuget-exists]
-    if: needs.check-nuget-exists.outputs.should-release == 'true'
+    needs: package-pipeline
+    if: needs.package-pipeline.outputs.should_release == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Create release
+      - name: Create release for ${{ needs.package-pipeline.outputs.project_name }}
         env:
-          PACKAGE_VERSION: ${{ needs.get-package-metadata.outputs.package-version }}
+          PACKAGE_ID: ${{ needs.package-pipeline.outputs.package_id }}
+          PACKAGE_VERSION: ${{ needs.package-pipeline.outputs.package_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "v$PACKAGE_VERSION" --generate-notes
+        run: gh release create "${PACKAGE_ID}-v$PACKAGE_VERSION" --generate-notes --title "Release ${PACKAGE_ID} v$PACKAGE_VERSION"
 
-  # This job, "publish", is responsible for publishing the NuGet package to nuget.org.
-  # It runs on an Ubuntu environment and depends on the successful completion of the `create-release` job.
-  # The primary purpose is to make the newly created package version publicly available.
+  # This job, "publish", is responsible for publishing each new NuGet package version to nuget.org.
+  # It runs on an Ubuntu environment and depends on the successful completion of the corresponding
+  # `package-pipeline` (and `create-release`) job for the specific project.
   # It requires the `NUGET_ORG_API_KEY` secret to authenticate with nuget.org.
   publish:
+    name: Publish ${{ needs.package-pipeline.outputs.project_name }}
     runs-on: ubuntu-latest
-    needs: create-release
+    needs: [package-pipeline, create-release]
+    if: needs.package-pipeline.outputs.should_release == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -121,9 +139,25 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9
-      - name: Pack
-        run: dotnet pack --configuration Release --output ./packages
-      - name: Push to NuGet.org
-        run: dotnet nuget push ./packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$NUGET_ORG_API_KEY"
+      - name: Pack ${{ needs.package-pipeline.outputs.project_name }}
+        id: pack
+        env:
+          PROJECT_NAME: ${{ needs.package-pipeline.outputs.project_name }}
+          PACKAGE_ID: ${{ needs.package-pipeline.outputs.package_id }}
+          PACKAGE_VERSION: ${{ needs.package-pipeline.outputs.package_version }}
+        run: |
+          PROJECT_FILE_PATH="src/$PROJECT_NAME/$PROJECT_NAME.csproj"
+          # Override PackageVersion during pack to ensure the .nupkg uses the exact version string that was checked.
+          dotnet pack "$PROJECT_FILE_PATH" \
+            --configuration Release \
+            --output ./packages \
+            -p:PackageVersion="$PACKAGE_VERSION"
+          
+          NUPKG_FILENAME="$PACKAGE_ID.$PACKAGE_VERSION.nupkg"
+          echo "nupkg_path=./packages/$NUPKG_FILENAME" >> "$GITHUB_OUTPUT"
+
+      - name: Push ${{ needs.package-pipeline.outputs.project_name }} to NuGet.org
         env:
           NUGET_ORG_API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
+          NUPKG_PATH: ${{ steps.pack.outputs.nupkg_path }}
+        run: dotnet nuget push "$NUPKG_PATH" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_ORG_API_KEY"
