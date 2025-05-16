@@ -126,25 +126,17 @@ jobs:
         id: get_params
         run: |
           PROJECT_NAME_CURRENT_MATRIX="${{ matrix.project_name }}"
-          # Safely get outputs from the needs context (these are JSON strings of arrays)
-          ALL_PROJECT_NAMES_JSON='${{ toJson(needs.package-pipeline.outputs.project_name) }}'
-          ALL_PACKAGE_IDS_JSON='${{ toJson(needs.package-pipeline.outputs.package_id) }}'
-          ALL_PACKAGE_VERSIONS_JSON='${{ toJson(needs.package-pipeline.outputs.package_version) }}'
-          ALL_SHOULD_RELEASE_JSON='${{ toJson(needs.package-pipeline.outputs.should_release) }}'
-
-          # Find the index of the current matrix.project_name
-          INDEX=$(echo "$ALL_PROJECT_NAMES_JSON" | jq ". | index(\"$PROJECT_NAME_CURRENT_MATRIX\")")
           
-          # Extract values for the current matrix instance
-          CURRENT_PACKAGE_ID=$(echo "$ALL_PACKAGE_IDS_JSON" | jq -r ".[$INDEX]")
-          CURRENT_PACKAGE_VERSION=$(echo "$ALL_PACKAGE_VERSIONS_JSON" | jq -r ".[$INDEX]")
-          CURRENT_SHOULD_RELEASE=$(echo "$ALL_SHOULD_RELEASE_JSON" | jq -r ".[$INDEX]")
+          # Directly access outputs from the corresponding package-pipeline matrix instance
+          CURRENT_PACKAGE_ID="${{ needs.package-pipeline.outputs.package_id[matrix.project_name] }}"
+          CURRENT_PACKAGE_VERSION="${{ needs.package-pipeline.outputs.package_version[matrix.project_name] }}"
+          CURRENT_SHOULD_RELEASE="${{ needs.package-pipeline.outputs.should_release[matrix.project_name] }}"
 
           echo "package_id_val=$CURRENT_PACKAGE_ID" >> $GITHUB_OUTPUT
           echo "package_version_val=$CURRENT_PACKAGE_VERSION" >> $GITHUB_OUTPUT
           echo "should_release_val=$CURRENT_SHOULD_RELEASE" >> $GITHUB_OUTPUT
           
-          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, Index: $INDEX, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, ShouldRelease: $CURRENT_SHOULD_RELEASE"
+          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, ShouldRelease: $CURRENT_SHOULD_RELEASE"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -174,25 +166,17 @@ jobs:
         id: get_params_for_publish
         run: |
           PROJECT_NAME_CURRENT_MATRIX="${{ matrix.project_name }}"
-          # Safely get outputs from the needs context (these are JSON strings of arrays)
-          CR_ALL_PROJECT_NAMES_JSON='${{ toJson(needs.create-release.outputs.project_name_out) }}'
-          CR_ALL_PACKAGE_IDS_JSON='${{ toJson(needs.create-release.outputs.package_id_out) }}'
-          CR_ALL_PACKAGE_VERSIONS_JSON='${{ toJson(needs.create-release.outputs.package_version_out) }}'
-          CR_ALL_CREATED_RELEASE_FLAGS_JSON='${{ toJson(needs.create-release.outputs.created_release_flag_out) }}'
 
-          # Find the index of the current matrix.project_name
-          INDEX=$(echo "$CR_ALL_PROJECT_NAMES_JSON" | jq ". | index(\"$PROJECT_NAME_CURRENT_MATRIX\")")
-          
-          # Extract values for the current matrix instance
-          CURRENT_PACKAGE_ID=$(echo "$CR_ALL_PACKAGE_IDS_JSON" | jq -r ".[$INDEX]")
-          CURRENT_PACKAGE_VERSION=$(echo "$CR_ALL_PACKAGE_VERSIONS_JSON" | jq -r ".[$INDEX]")
-          DID_CREATE_RELEASE=$(echo "$CR_ALL_CREATED_RELEASE_FLAGS_JSON" | jq -r ".[$INDEX]")
+          # Directly access outputs from the corresponding create-release matrix instance
+          CURRENT_PACKAGE_ID="${{ needs.create-release.outputs.package_id_out[matrix.project_name] }}"
+          CURRENT_PACKAGE_VERSION="${{ needs.create-release.outputs.package_version_out[matrix.project_name] }}"
+          DID_CREATE_RELEASE="${{ needs.create-release.outputs.created_release_flag_out[matrix.project_name] }}"
 
           echo "package_id_val=$CURRENT_PACKAGE_ID" >> $GITHUB_OUTPUT
           echo "package_version_val=$CURRENT_PACKAGE_VERSION" >> $GITHUB_OUTPUT
-          echo "should_publish_val=$DID_CREATE_RELEASE" >> $GITHUB_OUTPUT # Use this to control publish steps
+          echo "should_publish_val=$DID_CREATE_RELEASE" >> $GITHUB_OUTPUT
           
-          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, Index: $INDEX, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, DidCreateRelease: $DID_CREATE_RELEASE, ShouldPublish: $DID_CREATE_RELEASE"
+          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, DidCreateRelease: $DID_CREATE_RELEASE, ShouldPublish: $DID_CREATE_RELEASE"
 
       - name: Checkout
         uses: actions/checkout@v4
