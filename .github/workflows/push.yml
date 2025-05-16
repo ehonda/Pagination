@@ -61,8 +61,26 @@ jobs:
         id: get-metadata
         run: |
           PROJECT_FILE_PATH="src/${{ matrix.project_name }}/${{ matrix.project_name }}.csproj"
-          echo "package-version=$(dotnet build $PROJECT_FILE_PATH --getProperty:PackageVersion)" >> "$GITHUB_OUTPUT"
-          echo "package-id=$(dotnet build $PROJECT_FILE_PATH --getProperty:PackageId)" >> "$GITHUB_OUTPUT"
+          echo "Attempting to get PackageVersion from $PROJECT_FILE_PATH"
+          # Add --nologo and -v q for cleaner output, trim newlines/CR
+          VERSION_VAL=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageVersion --nologo -v q | tr -d '\n\r')
+          echo "Attempting to get PackageId from $PROJECT_FILE_PATH"
+          ID_VAL=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageId --nologo -v q | tr -d '\n\r')
+          
+          echo "Raw Extracted Version for ${{ matrix.project_name }}: [$VERSION_VAL]"
+          echo "Raw Extracted ID for ${{ matrix.project_name }}: [$ID_VAL]"
+          
+          if [ -z "$VERSION_VAL" ]; then
+            echo "::error::PackageVersion is empty for $PROJECT_FILE_PATH. Check if the property exists in the .csproj file, the project path is correct, or if the dotnet command produced unexpected output."
+            exit 1
+          fi
+          if [ -z "$ID_VAL" ]; then
+            echo "::error::PackageId is empty for $PROJECT_FILE_PATH. Check if the property exists in the .csproj file, the project path is correct, or if the dotnet command produced unexpected output."
+            exit 1
+          fi
+          
+          echo "package-version=$VERSION_VAL" >> "$GITHUB_OUTPUT"
+          echo "package-id=$ID_VAL" >> "$GITHUB_OUTPUT"
 
       - name: Check nuget.org package exists for ${{ matrix.project_name }}
         id: check-nuget
