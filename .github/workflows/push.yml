@@ -62,20 +62,27 @@ jobs:
         run: |
           PROJECT_FILE_PATH="src/${{ matrix.project_name }}/${{ matrix.project_name }}.csproj"
           echo "Attempting to get PackageVersion from $PROJECT_FILE_PATH"
-          # Add --nologo and -v q for cleaner output, trim newlines/CR
-          VERSION_VAL=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageVersion --nologo -v q | tr -d '\n\r')
+          # Get raw output first
+          VERSION_RAW=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageVersion --nologo -v q)
           echo "Attempting to get PackageId from $PROJECT_FILE_PATH"
-          ID_VAL=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageId --nologo -v q | tr -d '\n\r')
+          ID_RAW=$(dotnet build "$PROJECT_FILE_PATH" --getProperty:PackageId --nologo -v q)
+
+          echo "Raw output for Version for ${{ matrix.project_name }}: [$VERSION_RAW]"
+          echo "Raw output for ID for ${{ matrix.project_name }}: [$ID_RAW]"
+
+          # Trim all leading/trailing whitespace using xargs
+          VERSION_VAL=$(echo "$VERSION_RAW" | xargs)
+          ID_VAL=$(echo "$ID_RAW" | xargs)
           
-          echo "Raw Extracted Version for ${{ matrix.project_name }}: [$VERSION_VAL]"
-          echo "Raw Extracted ID for ${{ matrix.project_name }}: [$ID_VAL]"
+          echo "Trimmed Version for ${{ matrix.project_name }}: [$VERSION_VAL]"
+          echo "Trimmed ID for ${{ matrix.project_name }}: [$ID_VAL]"
           
           if [ -z "$VERSION_VAL" ]; then
-            echo "::error::PackageVersion is empty for $PROJECT_FILE_PATH. Check if the property exists in the .csproj file, the project path is correct, or if the dotnet command produced unexpected output."
+            echo "::error::PackageVersion is empty or only whitespace for $PROJECT_FILE_PATH. Raw: [$VERSION_RAW]"
             exit 1
           fi
           if [ -z "$ID_VAL" ]; then
-            echo "::error::PackageId is empty for $PROJECT_FILE_PATH. Check if the property exists in the .csproj file, the project path is correct, or if the dotnet command produced unexpected output."
+            echo "::error::PackageId is empty or only whitespace for $PROJECT_FILE_PATH. Raw: [$ID_RAW]"
             exit 1
           fi
           
