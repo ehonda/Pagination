@@ -152,16 +152,24 @@ jobs:
         run: |
           PROJECT_NAME_CURRENT_MATRIX="${{ matrix.project_name }}"
           
-          # Directly access outputs from the corresponding package-pipeline matrix instance
-          CURRENT_PACKAGE_ID="${{ needs.package-pipeline.outputs.package_id[matrix.project_name] }}"
-          CURRENT_PACKAGE_VERSION="${{ needs.package-pipeline.outputs.package_version[matrix.project_name] }}"
-          CURRENT_SHOULD_RELEASE="${{ needs.package-pipeline.outputs.should_release[matrix.project_name] }}"
+          # Access outputs from the corresponding package-pipeline matrix instance using toJSON(matrix)
+          # The toJSON(matrix) context provides a string like '{"project_name":"Core"}'
+          # which should match the keys in the outputs map from the package-pipeline matrix job.
+          CURRENT_PACKAGE_ID="${{ needs.package-pipeline.outputs.package_id[toJSON(matrix)] }}"
+          CURRENT_PACKAGE_VERSION="${{ needs.package-pipeline.outputs.package_version[toJSON(matrix)] }}"
+          CURRENT_SHOULD_RELEASE="${{ needs.package-pipeline.outputs.should_release[toJSON(matrix)] }}"
 
           echo "package_id_val=$CURRENT_PACKAGE_ID" >> $GITHUB_OUTPUT
           echo "package_version_val=$CURRENT_PACKAGE_VERSION" >> $GITHUB_OUTPUT
           echo "should_release_val=$CURRENT_SHOULD_RELEASE" >> $GITHUB_OUTPUT
           
-          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, ShouldRelease: $CURRENT_SHOULD_RELEASE"
+          echo "Debug - Project (create-release): ${PROJECT_NAME_CURRENT_MATRIX}"
+          echo "Debug - Matrix Context (create-release for keying): ${{ toJSON(matrix) }}"
+          echo "Debug - Retrieved Package ID: [$CURRENT_PACKAGE_ID]"
+          echo "Debug - Retrieved Package Version: [$CURRENT_PACKAGE_VERSION]"
+          echo "Debug - Retrieved Should Release: [$CURRENT_SHOULD_RELEASE]"
+          # For more detailed debugging, uncomment the line below to see the structure of one of the output maps:
+          # echo "Debug - All package_id outputs from package-pipeline: ${{ toJSON(needs.package-pipeline.outputs.package_id) }}"
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -192,16 +200,23 @@ jobs:
         run: |
           PROJECT_NAME_CURRENT_MATRIX="${{ matrix.project_name }}"
 
-          # Directly access outputs from the corresponding create-release matrix instance
-          CURRENT_PACKAGE_ID="${{ needs.create-release.outputs.package_id_out[matrix.project_name] }}"
-          CURRENT_PACKAGE_VERSION="${{ needs.create-release.outputs.package_version_out[matrix.project_name] }}"
-          DID_CREATE_RELEASE="${{ needs.create-release.outputs.created_release_flag_out[matrix.project_name] }}"
+          # Access outputs from the corresponding create-release matrix instance using toJSON(matrix)
+          CURRENT_PACKAGE_ID="${{ needs.create-release.outputs.package_id_out[toJSON(matrix)] }}"
+          CURRENT_PACKAGE_VERSION="${{ needs.create-release.outputs.package_version_out[toJSON(matrix)] }}"
+          DID_CREATE_RELEASE="${{ needs.create-release.outputs.created_release_flag_out[toJSON(matrix)] }}"
 
           echo "package_id_val=$CURRENT_PACKAGE_ID" >> $GITHUB_OUTPUT
           echo "package_version_val=$CURRENT_PACKAGE_VERSION" >> $GITHUB_OUTPUT
           echo "should_publish_val=$DID_CREATE_RELEASE" >> $GITHUB_OUTPUT
           
-          echo "Debug - Project: ${PROJECT_NAME_CURRENT_MATRIX}, ID: $CURRENT_PACKAGE_ID, Version: $CURRENT_PACKAGE_VERSION, DidCreateRelease: $DID_CREATE_RELEASE, ShouldPublish: $DID_CREATE_RELEASE"
+          echo "Debug - Project (publish): ${PROJECT_NAME_CURRENT_MATRIX}"
+          echo "Debug - Matrix Context (publish for keying): ${{ toJSON(matrix) }}"
+          echo "Debug - Retrieved Package ID for publish: [$CURRENT_PACKAGE_ID]"
+          echo "Debug - Retrieved Package Version for publish: [$CURRENT_PACKAGE_VERSION]"
+          echo "Debug - Retrieved Did Create Release for publish: [$DID_CREATE_RELEASE]"
+          echo "Debug - Calculated Should Publish: [$DID_CREATE_RELEASE]"
+          # For more detailed debugging, uncomment the line below:
+          # echo "Debug - All package_id_out outputs from create-release: ${{ toJSON(needs.create-release.outputs.package_id_out) }}"
 
       - name: Checkout
         uses: actions/checkout@v4
