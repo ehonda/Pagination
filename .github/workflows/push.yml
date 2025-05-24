@@ -105,6 +105,12 @@ jobs:
         with:
           dotnet-version: 9 # Consider making this configurable if needed
 
+      # Objective: Extracts the PackageVersion and PackageId from the project's .csproj file.
+      # Conditions: Runs for every project defined in the matrix. This is a foundational step
+      #             and does not have an 'if' condition.
+      # How: Uses 'dotnet build --getProperty:PackageVersion' and '--getProperty:PackageId'
+      #      to retrieve metadata. The values are then trimmed and set as step outputs.
+      #      The job will fail if these values are empty or whitespace.
       - name: Get package metadata for ${{ matrix.project_name }}
         id: get-metadata
         run: |
@@ -135,6 +141,14 @@ jobs:
           echo "package-version=$VERSION_VAL" >> "$GITHUB_OUTPUT"
           echo "package-id=$ID_VAL" >> "$GITHUB_OUTPUT"
 
+      # Objective: Ensures a GitHub Release for the current package version exists. If not,
+      #            it creates one. This step determines if the package should be built and published.
+      # Conditions: Runs for every project after package metadata has been successfully extracted.
+      # How: Constructs a release tag (e.g., <PackageId>-v<PackageVersion>).
+      #      Uses 'gh release view' to check for an existing release.
+      #      If found, sets 'should-release=false'.
+      #      If not found, creates a new release using 'gh release create' and sets 'should-release=true'.
+      #      Requires GITHUB_TOKEN for authentication.
       - name: Ensure GitHub Release for ${{ matrix.project_name }}
         id: manage_release
         env:
@@ -161,6 +175,12 @@ jobs:
             echo "should-release=true" >> $GITHUB_OUTPUT
           fi
 
+      # Objective: Creates a NuGet package (.nupkg file) for the project.
+      # Conditions: Runs only if the 'Ensure GitHub Release' step output 'should-release' is 'true',
+      #             indicating a new GitHub release was created (or was intended to be created).
+      # How: Uses the 'dotnet pack' command with 'Release' configuration.
+      #      The PackageVersion is explicitly passed to ensure consistency.
+      #      Outputs the path and filename of the generated .nupkg file.
       - name: Pack ${{ matrix.project_name }}
         id: pack
         if: steps.manage_release.outputs.should-release == 'true'
@@ -181,7 +201,11 @@ jobs:
           echo "nupkg_path=./packages/$NUPKG_FILENAME" >> "$GITHUB_OUTPUT"
           echo "nupkg_filename=$NUPKG_FILENAME" >> "$GITHUB_OUTPUT"
 
-
+      # Objective: Publishes the generated NuGet package to NuGet.org.
+      # Conditions: Runs only if the 'Ensure GitHub Release' step output 'should-release' is 'true',
+      #             meaning a new GitHub release was created and the package was packed.
+      # How: Uses 'dotnet nuget push' with the .nupkg file path from the 'Pack' step.
+      #      Requires the NUGET_ORG_API_KEY secret for authentication with NuGet.org.
       - name: Push ${{ matrix.project_name }} to NuGet.org
         if: steps.manage_release.outputs.should-release == 'true'
         env:
