@@ -5,11 +5,42 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <PackageId>EHonda.Pagination.CursorBased</PackageId>
-        <PackageVersion>0.2.0</PackageVersion>
+        <Version>0.3.0</Version>
+        <Authors>Dennis Renz</Authors>
+        <Description>Cursor-based pagination implementation.</Description>
+        <Copyright>Copyright (c) Dennis Renz 2025</Copyright>
+        <PackageProjectUrl>https://github.com/ehonda/Pagination</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>pagination cursor-based paging</PackageTags>
+        <PackageReleaseNotes>See package release notes on GitHub: https://github.com/ehonda/Pagination/releases/tag/v${Version}</PackageReleaseNotes>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- 
+            Build symbol package, which is the preferred way of distributing symbols (over embedding them in the dll),
+            see: https://github.com/dotnet/sourcelink/blob/main/README.md#alternative-pdb-distribution
+        -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <!--
+            Deterministic build
+                * See: https://github.com/clairernovotny/DeterministicBuilds#deterministic-builds
+                * Enables 'official build settings' (as opposed to 'local build settings'), see:
+                  https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#continuousintegrationbuild
+        -->
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sequential\Sequential.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="../../README.md" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>
