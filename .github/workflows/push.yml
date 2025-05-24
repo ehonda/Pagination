@@ -135,52 +135,35 @@ jobs:
           echo "package-version=$VERSION_VAL" >> "$GITHUB_OUTPUT"
           echo "package-id=$ID_VAL" >> "$GITHUB_OUTPUT"
 
-      - name: Check nuget.org package exists for ${{ matrix.project_name }}
-        id: check-nuget
-        env:
-          PACKAGE_VERSION: ${{ steps.get-metadata.outputs.package-version }}
-          PACKAGE_ID: ${{ steps.get-metadata.outputs.package-id }}
-        run: |
-          PKG_ID_LOWER=$(echo "$PACKAGE_ID" | tr '[:upper:]' '[:lower:]')
-          PKG_VERSION_LOWER=$(echo "$PACKAGE_VERSION" | tr '[:upper:]' '[:lower:]')
-          NUGET_URL="https://api.nuget.org/v3/registration5-semver1/$PKG_ID_LOWER/$PKG_VERSION_LOWER.json"
-          
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$NUGET_URL")
-          
-          if [ "$HTTP_STATUS" -eq 200 ]; then
-            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION already exists on NuGet.org."
-            echo "should-release=false" >> $GITHUB_OUTPUT
-          elif [ "$HTTP_STATUS" -eq 404 ]; then
-            echo -e "\e[32mINFO:\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION does not exist on NuGet.org."
-            echo "should-release=true" >> $GITHUB_OUTPUT
-          else
-            echo -e "\e[31mERROR:\e[0m Failed to check NuGet.org for package $PACKAGE_ID@$PACKAGE_VERSION. HTTP Status: $HTTP_STATUS"
-            # Fallback logic (optional, consider if nuget CLI is reliably available)
-            LATEST_PACKAGE_INFO=$(nuget list "$PACKAGE_ID" -Source https://api.nuget.org/v3/index.json -PreRelease 2>/dev/null | grep -E "^$PACKAGE_ID $PACKAGE_VERSION " || true)
-            if [ -n "$LATEST_PACKAGE_INFO" ]; then
-                echo -e "\e[32mINFO (fallback):\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION found via nuget list."
-                echo "should-release=false" >> $GITHUB_OUTPUT
-            else
-                echo -e "\e[32mINFO (fallback):\e[0m Package $PACKAGE_ID@$PACKAGE_VERSION not found via nuget list (or nuget list failed)."
-                echo "should-release=true" >> $GITHUB_OUTPUT # Assuming if primary check failed and fallback also doesn't find it, it's new
-            fi
-          fi
-
-      - name: Create GitHub Release for ${{ matrix.project_name }}
-        id: create_release_action
-        if: steps.check-nuget.outputs.should-release == 'true'
+      - name: Ensure GitHub Release for ${{ matrix.project_name }}
+        id: manage_release
         env:
           PACKAGE_ID: ${{ steps.get-metadata.outputs.package-id }}
           PACKAGE_VERSION: ${{ steps.get-metadata.outputs.package-version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Creating GitHub release for ${PACKAGE_ID} v${PACKAGE_VERSION}"
-          gh release create "${PACKAGE_ID}-v$PACKAGE_VERSION" --generate-notes --title "Release ${PACKAGE_ID} v$PACKAGE_VERSION"
-          echo "created_release=true" >> $GITHUB_OUTPUT
+          RELEASE_TAG="${PACKAGE_ID}-v${PACKAGE_VERSION}"
+          echo "Attempting to manage GitHub release with tag: $RELEASE_TAG for project ${{ matrix.project_name }}"
+          
+          # Check if the release already exists
+          # Add --repo to be explicit, though gh usually infers it from the checkout.
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "INFO: GitHub release $RELEASE_TAG already exists for ${{ matrix.project_name }}."
+            echo "should-release=false" >> $GITHUB_OUTPUT
+          else
+            echo "INFO: GitHub release $RELEASE_TAG does not exist for ${{ matrix.project_name }}. Creating it."
+            # Create the release
+            gh release create "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Release ${PACKAGE_ID} v${PACKAGE_VERSION}" \
+              --generate-notes
+            echo "INFO: Successfully created GitHub release $RELEASE_TAG for ${{ matrix.project_name }}."
+            echo "should-release=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Pack ${{ matrix.project_name }}
         id: pack
-        if: steps.check-nuget.outputs.should-release == 'true'
+        if: steps.manage_release.outputs.should-release == 'true'
         env:
           PROJECT_NAME: ${{ matrix.project_name }}
           PACKAGE_ID: ${{ steps.get-metadata.outputs.package-id }}
@@ -200,7 +183,7 @@ jobs:
 
 
       - name: Push ${{ matrix.project_name }} to NuGet.org
-        if: steps.check-nuget.outputs.should-release == 'true'
+        if: steps.manage_release.outputs.should-release == 'true'
         env:
           NUGET_ORG_API_KEY: ${{ secrets.NUGET_ORG_API_KEY }}
           NUPKG_PATH: ${{ steps.pack.outputs.nupkg_path }}
