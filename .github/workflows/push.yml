@@ -58,8 +58,8 @@ jobs:
             # Check if a .csproj file exists in this directory with the same name as the directory
             # e.g., src/Core/Core.csproj
             if [ -f "$dir_path_cleaned/$dir_name.csproj" ]; then
-              # Add the directory name, enclosed in double quotes, to the bash array
-              PROJECT_ARRAY+=("\\"$dir_name\\"")
+              # Add the directory name, correctly enclosed in double quotes, to the bash array
+              PROJECT_ARRAY+=("\"$dir_name\"")
             fi
           done
 
