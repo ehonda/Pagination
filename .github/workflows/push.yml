@@ -19,13 +19,13 @@
 #
 name: Release and publish to nuget.org
 
-# ➡️ Currently disabled, we first have to set up the `NUGET_ORG_API_KEY` secret in the repository settings.
-# `workflow_dispatch` is just a placeholder, because `on` is required.
+# This workflow is triggered on pushes to the `main` branch and can also be run manually via `workflow_dispatch`.
+# It requires the `NUGET_ORG_API_KEY` secret to be set in the repository settings for publishing to NuGet.org.
 on:
   workflow_dispatch:
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
 
 jobs:
   # This job, "test", executes the project's tests.
