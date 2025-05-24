@@ -1,0 +1,29 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>Dennis Renz</Authors>
+    <Copyright>Copyright (c) Dennis Renz 2025</Copyright>
+    <PackageProjectUrl>https://github.com/ehonda/Pagination</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>See package release notes on GitHub: https://github.com/ehonda/Pagination/releases/tag/v$(Version)</PackageReleaseNotes>
+    <Version>0.4.0</Version> <!-- Common version for all packages in src -->
+
+    <!-- Symbol Packaging -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include the README.md from the repository root for packaging.
+         PackagePath="" ensures it's at the root of the NuGet package.
+         $(MSBuildThisFileDirectory) refers to the 'src' directory where this Directory.Build.props file is located. -->
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="" Link="README.md" />
+  </ItemGroup>
+</Project>

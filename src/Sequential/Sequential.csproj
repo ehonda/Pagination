@@ -1,39 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <!-- Specific to this project -->
         <PackageId>EHonda.Pagination.Sequential</PackageId>
-        <Version>0.3.0</Version>
-        <Authors>Dennis Renz</Authors>
         <Description>Provides sequential pagination functionality.</Description>
-        <PackageProjectUrl>https://github.com/ehonda/Pagination</PackageProjectUrl>
         <PackageTags>pagination sequential paging</PackageTags>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Copyright>Copyright (c) Dennis Renz 2025</Copyright>
-        <PackageReleaseNotes>See package release notes on GitHub: https://github.com/ehonda/Pagination/releases/tag/v${Version}</PackageReleaseNotes>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <!-- 
-            Build symbol package, which is the preferred way of distributing symbols (over embedding them in the dll),
-            see: https://github.com/dotnet/sourcelink/blob/main/README.md#alternative-pdb-distribution
-        -->
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-        <!--
-            Deterministic build
-                * See: https://github.com/clairernovotny/DeterministicBuilds#deterministic-builds
-                * Enables 'official build settings' (as opposed to 'local build settings'), see:
-                  https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#continuousintegrationbuild
-        -->
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    </PropertyGroup>
+    <!-- Common properties are imported from Directory.Build.props -->
 
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
@@ -42,7 +16,6 @@
     <ItemGroup>
       <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
       <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-      <None Include="../../README.md" Pack="true" PackagePath="" />
     </ItemGroup>
 
 </Project>

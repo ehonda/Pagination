@@ -1,44 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <!-- Specific to this project -->
     <PackageId>EHonda.Pagination.Core</PackageId>
-    <Version>0.3.0</Version>
-    <Authors>Dennis Renz</Authors>
     <Description>Core interfaces and building blocks for pagination.</Description>
-    <Copyright>Copyright (c) Dennis Renz 2025</Copyright>
-    <PackageProjectUrl>https://github.com/ehonda/Pagination</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>pagination paging</PackageTags>
-    <PackageReleaseNotes>See package release notes on GitHub: https://github.com/ehonda/Pagination/releases/tag/v${Version}</PackageReleaseNotes>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- 
-        Build symbol package, which is the preferred way of distributing symbols (over embedding them in the dll),
-        see: https://github.com/dotnet/sourcelink/blob/main/README.md#alternative-pdb-distribution
-    -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <!--
-        Deterministic build
-            * See: https://github.com/clairernovotny/DeterministicBuilds#deterministic-builds
-            * Enables 'official build settings' (as opposed to 'local build settings'), see:
-              https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#continuousintegrationbuild
-    -->
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="" />
-  </ItemGroup>
+  <!-- Common properties are imported from Directory.Build.props -->
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
