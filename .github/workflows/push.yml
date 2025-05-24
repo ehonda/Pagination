@@ -48,7 +48,7 @@ jobs:
       - name: Generate projects matrix
         id: generate-matrix
         run: |
-          PROJECT_LIST=""
+          PROJECT_ARRAY=()
           # Iterate over subdirectories in src/
           for dir_path in src/*/; do
             # Remove trailing slash for basename
@@ -58,20 +58,24 @@ jobs:
             # Check if a .csproj file exists in this directory with the same name as the directory
             # e.g., src/Core/Core.csproj
             if [ -f "$dir_path_cleaned/$dir_name.csproj" ]; then
-              if [ -z "$PROJECT_LIST" ]; then
-                PROJECT_LIST="\\"$dir_name\\""
-              else
-                PROJECT_LIST="$PROJECT_LIST,\\"$dir_name\\""
-              fi
+              # Add the directory name, enclosed in double quotes, to the bash array
+              PROJECT_ARRAY+=("\\"$dir_name\\"")
             fi
           done
+
+          # Join the array elements with a comma
+          # IFS (Internal Field Separator) is set to comma for the join operation
+          OLD_IFS="$IFS"
+          IFS=','
+          PROJECT_LIST="${PROJECT_ARRAY[*]}"
+          IFS="$OLD_IFS" # Restore IFS
 
           JSON_OUTPUT="[$PROJECT_LIST]"
           echo "Generated project matrix: $JSON_OUTPUT" # For debugging
           echo "projects=$JSON_OUTPUT" >> "$GITHUB_OUTPUT"
 
           # Fail if no projects are found, as this likely indicates an issue.
-          if [ -z "$PROJECT_LIST" ]; then
+          if [ ${#PROJECT_ARRAY[@]} -eq 0 ]; then
             echo "::error::No projects found matching the pattern src/*/<project_name>.csproj where project name matches directory name."
             echo "Resulting JSON_OUTPUT would be []."
             exit 1
