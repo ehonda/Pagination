@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
-      <PackageReference Include="TUnit" Version="0.19.116" />
+      <PackageReference Include="Ardalis.GuardClauses" />
+      <PackageReference Include="TUnit" />
     </ItemGroup>
 
 </Project>
