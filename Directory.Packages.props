@@ -15,7 +15,7 @@
     <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.8.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
-    <PackageVersion Include="TUnit" Version="0.22.10" />
+    <PackageVersion Include="TUnit" Version="0.22.12" />
 
     <!-- Sample Project Dependencies -->
     <PackageVersion Include="dotenv.net" Version="3.2.1" />
