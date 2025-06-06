@@ -4,32 +4,21 @@ using JetBrains.Annotations;
 
 namespace Sequential;
 
-// TODO: Fix xml doc, it's not accurate anymore
-
 /// <summary>
-/// Retrieves all items from a paginated resource by sequentially going from one page to the next, as long as more pages
-/// are available.
+/// Handles paginated resources by sequentially fetching pages. It uses a context object (<typeparamref name="TPaginationContext"/>)
+/// to manage the state between page requests, allowing it to retrieve all items across multiple pages.
 /// </summary>
 /// <remarks>
-/// The algorithm to retrieve all pages basically looks like this:
+/// The algorithm to retrieve all items is as follows:
 /// <list type="number">
-/// <item>
-///     Retrieve the next page.
-/// </item>
-/// <item>
-///     Transform the page, typically to extract information about the next page, as well as the items on the page.
-/// </item>
-/// <item>
-///     Yield all items on the page.
-/// </item>
-/// <item>
-///     While there is a next page, repeat the previous three steps.
-/// </item>
+/// <item><description>Call <see cref="GetPageAsync"/> to retrieve the current page's context. The input context may be null for the first page.</description></item>
+/// <item><description>Call <see cref="ExtractItemsAsync"/> with the retrieved context to get items from the current page.</description></item>
+/// <item><description>Yield each item.</description></item>
+/// <item><description>Call <see cref="NextPageExistsAsync"/> with the current context to determine if more pages are available. If so, repeat the process with the new context.</description></item>
 /// </list>
 /// </remarks>
-/// <typeparam name="TPage">The type of the transformed pages.</typeparam>
-/// <typeparam name="TTransformedPage">The type of the transformed pages.</typeparam>
-/// <typeparam name="TItem">The type of the items.</typeparam>
+/// <typeparam name="TPaginationContext">The type that holds the context for pagination. This context is typically updated after fetching each page and is used to fetch subsequent pages and determine if more pages exist.</typeparam>
+/// <typeparam name="TItem">The type of the items to be retrieved.</typeparam>
 [PublicAPI]
 public abstract class PaginationHandler<TPaginationContext, TItem> : IPaginationHandler<TItem>
     // TODO: It would be nicer to use an option type in the places where there might not be a context (instead of null
