@@ -1,35 +1,54 @@
 using System.Numerics;
-using OffsetBased.Composite.IndexDataExtractors;
+using OffsetBased.Composite.OffsetStateExtractors;
 using Sequential.Composite.NextPageCheckers;
 
 namespace OffsetBased.Composite;
 
+/// <summary>
+/// Checks if a next page exists for offset-based pagination using an <see cref="IOffsetStateExtractor{TPaginationContext, TIndex}"/>.
+/// This version defaults to an <see cref="int"/> for the index type.
+/// </summary>
+/// <typeparam name="TPaginationContext">The type of the pagination context.</typeparam>
 public class NextPageChecker<TPaginationContext>
     : NextPageChecker<TPaginationContext, int>
     where TPaginationContext : class
 {
-    public NextPageChecker(IIndexDataExtractor<TPaginationContext, int> indexDataExtractor)
-        : base(indexDataExtractor)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NextPageChecker{TPaginationContext}"/> class.
+    /// </summary>
+    /// <param name="offsetStateExtractor">The extractor for offset state.</param>
+    public NextPageChecker(IOffsetStateExtractor<TPaginationContext, int> offsetStateExtractor)
+        : base(offsetStateExtractor)
     {
     }
 }
 
+/// <summary>
+/// Checks if a next page exists for offset-based pagination using an <see cref="IOffsetStateExtractor{TPaginationContext, TIndex}"/>.
+/// </summary>
+/// <typeparam name="TPaginationContext">The type of the pagination context.</typeparam>
+/// <typeparam name="TIndex">The type of the index used for pagination (e.g., int, long).</typeparam>
 public class NextPageChecker<TPaginationContext, TIndex> : INextPageChecker<TPaginationContext>
     where TPaginationContext : class
     where TIndex : INumber<TIndex>
 {
-    private readonly IIndexDataExtractor<TPaginationContext, TIndex> _indexDataExtractor;
+    private readonly IOffsetStateExtractor<TPaginationContext, TIndex> _offsetStateExtractor;
 
-    public NextPageChecker(IIndexDataExtractor<TPaginationContext, TIndex> indexDataExtractor)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NextPageChecker{TPaginationContext, TIndex}"/> class.
+    /// </summary>
+    /// <param name="offsetStateExtractor">The extractor for offset state.</param>
+    public NextPageChecker(IOffsetStateExtractor<TPaginationContext, TIndex> offsetStateExtractor)
     {
-        _indexDataExtractor = indexDataExtractor;
+        _offsetStateExtractor = offsetStateExtractor;
     }
 
+    /// <inheritdoc />
     public async Task<bool> NextPageExistsAsync(TPaginationContext context,
         CancellationToken cancellationToken = default)
     {
-        var indexData = await _indexDataExtractor.ExtractIndexDataAsync(context, cancellationToken);
+        var state = await _offsetStateExtractor.ExtractOffsetStateAsync(context, cancellationToken);
 
-        return indexData.Offset < indexData.Total;
+        return state.Offset < state.Total;
     }
 }
