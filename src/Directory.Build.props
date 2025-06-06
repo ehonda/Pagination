@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/ehonda/Pagination</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>0.5.0</Version> <!-- Common version for all packages in src -->
+    <Version>0.6.0</Version> <!-- Common version for all packages in src -->
     <PackageReleaseNotes>See package release notes on GitHub: https://github.com/ehonda/Pagination/releases/tag/v$(Version)</PackageReleaseNotes>
 
     <!-- Symbol Packaging -->
