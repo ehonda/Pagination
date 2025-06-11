@@ -46,7 +46,6 @@ var handler = new OffsetBased.Composite.PaginationHandlerBuilder<MyPage, int, My
         // Extract pagination state from the fetched page
         return new OffsetState<int>(
             pageContext.CurrentOffset,
-            pageContext.PageSize,
             pageContext.TotalItems);
     })
     .WithItemExtractor((MyPage pageContext, CancellationToken cancellationToken) =>
