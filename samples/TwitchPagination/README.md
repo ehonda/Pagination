@@ -4,7 +4,7 @@
 
 ## Overview
 
-This sample demonstrates how to use the `CursorBased` library to interact with a cursor-based paginated API. It showcases four approaches:
+This sample demonstrates how to use the `CursorBased` library to interact with a cursor-based paginated API. It showcases four approaches using the Twitch API as an example. For additional information about the Twitch API and pagination concepts, see the [References](#references) section.
 
 1. 🏗️ **[Inheriting the abstract base class `CursorBased.PaginationHandler`](#1-️-inheriting-from-paginationhandler)**  
    ✅ **Best for:** Quick implementation when you want to implement pagination logic within a single class
@@ -183,3 +183,15 @@ var allGames = await handler
 ```
 
 This approach provides the same functionality as the previous examples but with inline implementations, making it ideal for simple pagination scenarios where creating separate classes would be overkill. The builder automatically wraps your lambda expressions in the appropriate interface implementations.
+
+## References
+
+### Twitch API Documentation
+
+- **[Twitch API Pagination Guide](https://dev.twitch.tv/docs/api/guide#pagination)** - Official documentation explaining cursor-based pagination in the Twitch API
+- **[Get Top Games API Reference](https://dev.twitch.tv/docs/api/reference#get-top-games)** - API reference for the endpoint used in this sample
+
+### Related Resources
+
+- **[Twitch API Getting Started](https://dev.twitch.tv/docs/api/)** - General introduction to the Twitch API
+- **[Authentication Guide](https://dev.twitch.tv/docs/authentication/)** - How to authenticate with the Twitch API (required for API access)
