@@ -6,6 +6,14 @@
 
 `EHonda.Pagination` is a .NET library that provides a flexible and extensible way to handle pagination. It offers core interfaces and building blocks, along with implementations for cursor-based, offset-based, and sequential pagination. This repository also includes sample projects in the `samples` directory to demonstrate the library's usage in various scenarios.
 
+## Sample Projects
+
+Both sample projects follow the same comprehensive tutorial structure, covering four different implementation approaches with complete code examples and guidance on when to use each pattern: inheritance from base classes, direct composition with concrete components, builder pattern with concrete implementations, and builder pattern with lambda expressions.
+
+- **[TwitchPagination](samples/TwitchPagination/README.md)** - Demonstrates cursor-based pagination using the Twitch API
+
+- **[SpotifyPagination](samples/SpotifyPagination/README.md)** - Shows offset-based pagination using the Spotify API
+
 ## Features and Examples
 
 This library provides several ways to handle pagination, catering to different API designs. Below are some examples of how to use the core pagination handlers, focusing on the fluent builder syntax for a more declarative setup. For more detailed and runnable examples, please refer to the projects in the `samples` directory.
@@ -61,7 +69,7 @@ await foreach (var item in handler.GetAllItemsAsync())
 }
 ```
 
-The library provides `OffsetState<TIndex>` (see `src/OffsetBased/OffsetState.cs`) to manage the current offset. The base handler is in `src/OffsetBased/PaginationHandler.cs`. For concrete examples, see the `samples/SpotifyPagination` project.
+The library provides `OffsetState<TIndex>` (see `src/OffsetBased/OffsetState.cs`) to manage the current offset. The base handler is in `src/OffsetBased/PaginationHandler.cs`. For concrete examples, see the **[SpotifyPagination sample](samples/SpotifyPagination/README.md)** project.
 
 ### Cursor-Based Pagination
 
@@ -112,7 +120,7 @@ await foreach (var item in handler.GetAllItemsAsync())
 }
 ```
 
-The base handler is in `src/CursorBased/PaginationHandler.cs`. For concrete examples, see the `samples/TwitchPagination` (demonstrates both lambda and class-based component setup) and `samples/SpotifyPagination` projects.
+The base handler is in `src/CursorBased/PaginationHandler.cs`. For concrete examples, see the **[TwitchPagination sample](samples/TwitchPagination/README.md)** (demonstrates both lambda and class-based component setup) and **[SpotifyPagination sample](samples/SpotifyPagination/README.md)** projects.
 
 ### Extensibility
 

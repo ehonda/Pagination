@@ -75,7 +75,7 @@ public static class Functions
 
                 return new(movies, (paginationContext?.Offset ?? 0) + movies.Count, total);
             })
-            .WithIndexDataExtractor(paginationContext => new(paginationContext.Offset, paginationContext.Total))
+            .WithOffsetStateExtractor(paginationContext => new(paginationContext.Offset, paginationContext.Total))
             .WithItemExtractor(paginationContext => paginationContext.Movies)
             .Build();
 
