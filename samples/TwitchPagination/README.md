@@ -1,7 +1,5 @@
 # TwitchPagination Sample
 
-[TOC]
-
 ## Overview
 
 This sample demonstrates how to use the `CursorBased` library to interact with a cursor-based paginated API. It showcases four approaches using the Twitch API as an example. For additional information about the Twitch API and pagination concepts, see the [References](#references) section.
