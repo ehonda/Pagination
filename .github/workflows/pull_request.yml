@@ -1,5 +1,5 @@
 # This GitHub Actions workflow, named "Pull Request", is triggered when a pull request is made to the `main` branch.
-# It runs a single job named "test", which calls the reusable workflow defined in `./.github/workflows/dotnet-test.yml` to execute tests.
+# It runs a single job that calls the reusable workflow defined in `./.github/workflows/dotnet-build-and-test.yml` to build the solution and execute tests.
 name: Pull Request
 
 on:
@@ -8,5 +8,5 @@ on:
       - main
 
 jobs:
-  test:
-    uses: ./.github/workflows/dotnet-test.yml
+  build_and_test:
+    uses: ./.github/workflows/dotnet-build-and-test.yml
