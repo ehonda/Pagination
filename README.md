@@ -8,11 +8,21 @@
 
 ## Sample Projects
 
-Both sample projects follow the same comprehensive tutorial structure, covering four different implementation approaches with complete code examples and guidance on when to use each pattern: inheritance from base classes, direct composition with concrete components, builder pattern with concrete implementations, and builder pattern with lambda expressions.
+The following sample projects demonstrate the `EHonda.Pagination` library in different contexts and scenarios:
+
+### API-Based Samples
+
+Both API-based sample projects follow the same comprehensive tutorial structure, covering four different implementation approaches with complete code examples and guidance on when to use each pattern: inheritance from base classes, direct composition with concrete components, builder pattern with concrete implementations, and builder pattern with lambda expressions.
 
 - **[TwitchPagination](samples/TwitchPagination/README.md)** - Demonstrates cursor-based pagination using the Twitch API
 
 - **[SpotifyPagination](samples/SpotifyPagination/README.md)** - Shows offset-based pagination using the Spotify API
+
+### Database/ORM Sample
+
+The EFCorePagination sample showcases the library's flexibility beyond traditional API pagination scenarios, demonstrating how the same pagination patterns can be effectively applied to database queries and ORM operations:
+
+- **[EFCorePagination](samples/EFCorePagination/README.md)** - Demonstrates the library's versatility by applying both cursor-based and offset-based pagination to Entity Framework Core queries, showing how the pagination abstractions work seamlessly with database operations
 
 ## Features and Examples
 
