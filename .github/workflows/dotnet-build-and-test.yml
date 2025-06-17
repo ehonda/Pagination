@@ -24,6 +24,6 @@ jobs:
       # This ensures that broken sample projects cannot be merged, as they would
       # previously pass CI since tests don't depend on sample projects.
       - name: Build solution
-        run: dotnet build Pagination.slnx --configuration Release
+        run: dotnet build --configuration Release
       - name: Run tests
-        run: dotnet test Pagination.slnx --configuration Release --no-build
+        run: dotnet test --configuration Release --no-build
