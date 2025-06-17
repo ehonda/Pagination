@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/EFCorePagination/EFCorePagination.csproj" />
+    <Project Path="samples/SpotifyPagination/SpotifyPagination.csproj" />
+    <Project Path="samples/TwitchPagination/TwitchPagination.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Core/Core.csproj" />
+    <Project Path="src/CursorBased/CursorBased.csproj" />
+    <Project Path="src/OffsetBased/OffsetBased.csproj" />
+    <Project Path="src/Sequential/Sequential.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Sequential.TUnit.Tests/Sequential.TUnit.Tests.csproj" />
+  </Folder>
+</Solution>
