@@ -6,6 +6,61 @@
 
 `EHonda.Pagination` is a .NET library that provides a flexible and extensible way to handle pagination. It offers core interfaces and building blocks, along with implementations for cursor-based, offset-based, and sequential pagination. This repository also includes sample projects in the `samples` directory to demonstrate the library's usage in various scenarios.
 
+## Quickstart
+
+This example demonstrates how to use the cursor-based pagination handler to fetch all top games from the Twitch API via a `GamesClient`.
+
+First, let's consider a `GamesClient` that can only fetch a single page of games at a time. The API returns a `GetTopGamesResponse` object containing the game data and a pagination cursor.
+
+```csharp
+// A client that fetches pages of data from the Twitch game API
+public class GamesClient
+{
+    // Fetches a single page of top games
+    public async Task<GetTopGamesResponse> GetTopGamesAsync(int first = 20, string? cursor = null)
+    {
+        // In a real application, this would make an HTTP request to the Twitch API.
+        // For details, see the TwitchPagination sample.
+    }
+}
+
+// Represents the API response for a page of games
+public record GetTopGamesResponse(IReadOnlyList<Game> Data, Pagination Pagination);
+
+public record Pagination(string? Cursor);
+public record Game(string Id, string Name);
+```
+
+Instead of manually calling `GetTopGamesAsync` in a loop, we can use the `PaginationHandlerBuilder` to easily add a method that fetches all pages automatically.
+
+```csharp
+public static class GamesClientExtensions
+{
+    public static IAsyncEnumerable<Game> GetAllTopGames(this GamesClient client)
+    {
+        var paginationHandler = new CursorBased.Composite.PaginationHandlerBuilder<GetTopGamesResponse, Game>()
+            .WithPageRetriever((prevPage, _) => client.GetTopGamesAsync(100, prevPage?.Pagination.Cursor))
+            .WithCursorExtractor(page => page.Pagination.Cursor)
+            .WithItemExtractor(page => page.Data)
+            .Build();
+
+        return paginationHandler.GetAllItemsAsync();
+    }
+}
+```
+
+With this extension method, you can now create a `GamesClient` instance and iterate through all games from all pages with a simple loop.
+
+```csharp
+var gamesClient = new GamesClient();
+await foreach (var game in gamesClient.GetAllTopGames())
+{
+    Console.WriteLine(game.Name);
+}
+```
+
+This approach simplifies pagination by abstracting the page-by-page fetching logic, allowing you to work with a single asynchronous stream of items. For a complete, runnable implementation, please see the **[TwitchPagination sample](samples/TwitchPagination/README.md)**.
+
 ## Sample Projects
 
 The following sample projects demonstrate the `EHonda.Pagination` library in different contexts and scenarios:
