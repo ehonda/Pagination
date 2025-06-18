@@ -34,12 +34,15 @@ public record Game(string Id, string Name);
 Instead of manually calling `GetTopGamesAsync` in a loop, we can use the `PaginationHandlerBuilder` to easily add a method that fetches all pages automatically.
 
 ```csharp
-public static class GamesClientExtensions
+public class GamesClient
 {
-    public static IAsyncEnumerable<Game> GetAllTopGames(this GamesClient client)
+    // GetTopGamesAsync method as defined above
+    // ...
+    
+    public IAsyncEnumerable<Game> GetAllTopGames()
     {
         var paginationHandler = new CursorBased.Composite.PaginationHandlerBuilder<GetTopGamesResponse, Game>()
-            .WithPageRetriever((prevPage, _) => client.GetTopGamesAsync(100, prevPage?.Pagination.Cursor))
+            .WithPageRetriever((prevPage, _) => GetTopGamesAsync(100, prevPage?.Pagination.Cursor))
             .WithCursorExtractor(page => page.Pagination.Cursor)
             .WithItemExtractor(page => page.Data)
             .Build();
@@ -49,7 +52,7 @@ public static class GamesClientExtensions
 }
 ```
 
-With this extension method, you can now create a `GamesClient` instance and iterate through all games from all pages with a simple loop.
+With this new method, you can now create a `GamesClient` instance and iterate through all games from all pages with a simple loop.
 
 ```csharp
 var gamesClient = new GamesClient();
