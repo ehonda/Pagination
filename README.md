@@ -1,7 +1,5 @@
 # EHonda.Pagination
 
-🚧 WIP 🚧
-
 ## Description
 
 `EHonda.Pagination` is a .NET library that provides a flexible and extensible way to handle pagination. It offers core interfaces and building blocks, along with implementations for cursor-based, offset-based, and sequential pagination. This repository also includes sample projects in the `samples` directory to demonstrate the library's usage in various scenarios.

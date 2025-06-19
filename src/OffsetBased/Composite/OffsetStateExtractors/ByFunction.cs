@@ -2,11 +2,6 @@ using System.Numerics;
 
 namespace OffsetBased.Composite.OffsetStateExtractors;
 
-// TODO: Do we want versions with just one type parameter for these as well? Probably not right, because they are not
-//       designed to be inherited from (and the builder methods work with the two type param versions anyway).
-
-// TODO: Should we make these sealed?
-
 /// <summary>
 /// Extracts offset-based pagination state using a synchronous function.
 /// </summary>
