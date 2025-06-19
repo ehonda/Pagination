@@ -31,7 +31,6 @@ public abstract class PaginationHandler<TPaginationContext, TIndex, TItem>
     {
         var state = await ExtractOffsetStateAsync(context, cancellationToken);
 
-        // TODO: Is `<` the correct choice here?
         return state.Offset < state.Total;
     }
 

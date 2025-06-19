@@ -2,6 +2,7 @@ namespace Sequential.Composite.PageRetrievers;
 
 // TODO: Is there any benefit in implementing this via the async variant? Are there any downsides? Maybe benchmark the
 //       difference
+
 /// <summary>
 /// Retrieves a page of data using a synchronous function.
 /// </summary>
