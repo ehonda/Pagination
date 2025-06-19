@@ -11,6 +11,7 @@
     <Project Path="src/Sequential/Sequential.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/OffsetBased.TUnit.Tests/OffsetBased.TUnit.Tests.csproj" />
     <Project Path="tests/Sequential.TUnit.Tests/Sequential.TUnit.Tests.csproj" />
   </Folder>
 </Solution>
