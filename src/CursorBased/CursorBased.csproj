@@ -2,9 +2,8 @@
 
     <PropertyGroup>
         <!-- Specific to this project -->
-        <PackageId>EHonda.Pagination.CursorBased</PackageId>
         <Description>Cursor-based pagination implementation.</Description>
-        <PackageTags>pagination cursor-based paging</PackageTags>
+        <PackageTags>$(PackageTags) cursor-based</PackageTags>
     </PropertyGroup>
 
     <!-- Common properties are imported from Directory.Build.props -->
