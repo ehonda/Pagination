@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace OffsetBased;
+namespace EHonda.Pagination.OffsetBased;
 
 /// <summary>
 /// Extends the sequential pagination handler to support offset-based pagination.

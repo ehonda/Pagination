@@ -1,4 +1,4 @@
-using CursorBased.Composite.CursorExtractors;
+using EHonda.Pagination.CursorBased.Composite.CursorExtractors;
 
 namespace TwitchPagination.Games.Composite;
 

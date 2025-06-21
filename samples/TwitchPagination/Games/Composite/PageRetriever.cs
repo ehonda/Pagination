@@ -1,5 +1,5 @@
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 using JetBrains.Annotations;
-using Sequential.Composite.PageRetrievers;
 
 namespace TwitchPagination.Games.Composite;
 

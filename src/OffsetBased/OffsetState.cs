@@ -1,4 +1,4 @@
-namespace OffsetBased;
+namespace EHonda.Pagination.OffsetBased;
 
 /// <summary>
 /// Represents the state used for offset-based pagination, including the current offset and the total number of items.

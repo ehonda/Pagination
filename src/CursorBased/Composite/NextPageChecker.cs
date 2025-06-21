@@ -1,7 +1,7 @@
-using CursorBased.Composite.CursorExtractors;
-using Sequential.Composite.NextPageCheckers;
+using EHonda.Pagination.CursorBased.Composite.CursorExtractors;
+using EHonda.Pagination.Sequential.Composite.NextPageCheckers;
 
-namespace CursorBased.Composite;
+namespace EHonda.Pagination.CursorBased.Composite;
 
 /// <summary>
 /// Checks for the existence of a next page in a cursor-based pagination context, using a string cursor.

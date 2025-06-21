@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Sequential.Composite.NextPageCheckers;
+namespace EHonda.Pagination.Sequential.Composite.NextPageCheckers;
 
 /// <summary>
 /// Defines a contract for checking if a next page exists in a pagination context.

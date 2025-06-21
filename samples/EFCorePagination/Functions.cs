@@ -1,3 +1,4 @@
+using EHonda.Pagination.CursorBased.Composite;
 using Microsoft.EntityFrameworkCore;
 
 namespace EFCorePagination;
@@ -34,7 +35,7 @@ public static class Functions
     {
         // TODO: Improve used types
         // TODO: Improve user experience
-        var handler = new CursorBased.Composite.PaginationHandlerBuilder<CursorBasedPaginationContext, int?, Movie>()
+        var handler = new PaginationHandlerBuilder<CursorBasedPaginationContext, int?, Movie>()
             .WithPageRetriever(async (paginationContext, cancellationToken) =>
             {
                 await using var dbContext = new MoviesDbContext();
@@ -59,7 +60,7 @@ public static class Functions
 
     public static IAsyncEnumerable<Movie> GetMoviesPaginatedOffsetBased()
     {
-        var handler = new OffsetBased.Composite.PaginationHandlerBuilder<OffsetBasedPaginationContext, Movie>()
+        var handler = new EHonda.Pagination.OffsetBased.Composite.PaginationHandlerBuilder<OffsetBasedPaginationContext, Movie>()
             .WithPageRetriever(async (paginationContext, cancellationToken) =>
             {
                 await using var dbContext = new MoviesDbContext();

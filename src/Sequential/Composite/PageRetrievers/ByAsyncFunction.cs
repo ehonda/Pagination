@@ -1,4 +1,4 @@
-namespace Sequential.Composite.PageRetrievers;
+namespace EHonda.Pagination.Sequential.Composite.PageRetrievers;
 
 /// <summary>
 /// Retrieves a page of data using an asynchronous function.

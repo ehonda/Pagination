@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace OffsetBased.Composite.OffsetStateExtractors;
+namespace EHonda.Pagination.OffsetBased.Composite.OffsetStateExtractors;
 
 /// <summary>
 /// Extracts offset-based pagination state using an asynchronous function.

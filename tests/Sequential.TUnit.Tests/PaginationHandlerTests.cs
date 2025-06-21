@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
-using Core;
+using EHonda.Pagination.Core;
+using EHonda.Pagination.Sequential;
 
 namespace Sequential.TUnit.Tests;
 
