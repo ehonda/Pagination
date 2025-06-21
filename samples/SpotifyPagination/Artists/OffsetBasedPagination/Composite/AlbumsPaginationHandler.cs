@@ -1,4 +1,4 @@
-using OffsetBased.Composite;
+using EHonda.Pagination.OffsetBased.Composite;
 
 namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 

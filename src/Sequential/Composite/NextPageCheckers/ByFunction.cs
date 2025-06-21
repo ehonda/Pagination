@@ -1,4 +1,4 @@
-namespace Sequential.Composite.NextPageCheckers;
+namespace EHonda.Pagination.Sequential.Composite.NextPageCheckers;
 
 /// <summary>
 /// Checks for the existence of a next page using a synchronous function.

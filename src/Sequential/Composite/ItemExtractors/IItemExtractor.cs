@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Sequential.Composite.ItemExtractors;
+namespace EHonda.Pagination.Sequential.Composite.ItemExtractors;
 
 /// <summary>
 /// Defines a contract for extracting items from a pagination context.

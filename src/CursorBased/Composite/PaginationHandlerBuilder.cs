@@ -1,9 +1,9 @@
 using Ardalis.GuardClauses;
-using CursorBased.Composite.CursorExtractors;
-using Sequential.Composite.ItemExtractors;
-using Sequential.Composite.PageRetrievers;
+using EHonda.Pagination.CursorBased.Composite.CursorExtractors;
+using EHonda.Pagination.Sequential.Composite.ItemExtractors;
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 
-namespace CursorBased.Composite;
+namespace EHonda.Pagination.CursorBased.Composite;
 
 /// <summary>
 /// A builder for creating instances of <see cref="PaginationHandler{TPaginationContext, TItem}"/>, 

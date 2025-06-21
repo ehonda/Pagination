@@ -1,4 +1,4 @@
-using Sequential.Composite.ItemExtractors;
+using EHonda.Pagination.Sequential.Composite.ItemExtractors;
 
 namespace TwitchPagination.Games.Composite;
 

@@ -2,16 +2,9 @@
 
   <PropertyGroup>
     <!-- Specific to this project -->
-    <PackageId>EHonda.Pagination.Core</PackageId>
     <Description>Core interfaces and building blocks for pagination.</Description>
-    <PackageTags>pagination paging</PackageTags>
-    <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
 
   <!-- Common properties are imported from Directory.Build.props -->
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" />
-  </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Ardalis.GuardClauses;
-using CursorBased.Composite;
+using EHonda.Pagination.CursorBased.Composite;
 using TwitchPagination.Games.Composite;
 
 namespace TwitchPagination.Games;

@@ -1,10 +1,10 @@
 using System.Numerics;
 using Ardalis.GuardClauses;
-using OffsetBased.Composite.OffsetStateExtractors;
-using Sequential.Composite.ItemExtractors;
-using Sequential.Composite.PageRetrievers;
+using EHonda.Pagination.OffsetBased.Composite.OffsetStateExtractors;
+using EHonda.Pagination.Sequential.Composite.ItemExtractors;
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 
-namespace OffsetBased.Composite;
+namespace EHonda.Pagination.OffsetBased.Composite;
 
 /// <summary>
 /// A builder for creating instances of <see cref="PaginationHandler{TPaginationContext, TItem}"/>.

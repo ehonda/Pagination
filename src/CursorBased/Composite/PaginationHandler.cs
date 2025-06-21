@@ -1,9 +1,9 @@
-using CursorBased.Composite.CursorExtractors;
+using EHonda.Pagination.CursorBased.Composite.CursorExtractors;
+using EHonda.Pagination.Sequential.Composite.ItemExtractors;
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 using JetBrains.Annotations;
-using Sequential.Composite.ItemExtractors;
-using Sequential.Composite.PageRetrievers;
 
-namespace CursorBased.Composite;
+namespace EHonda.Pagination.CursorBased.Composite;
 
 /// <summary>
 /// Handles cursor-based pagination by composing page retrieval, cursor extraction, and item extraction logic.

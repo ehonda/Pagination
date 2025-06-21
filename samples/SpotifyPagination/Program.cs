@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using OffsetBased;
-using OffsetBased.Composite;
 using SpotifyPagination;
 using SpotifyPagination.Artists;
 using SpotifyPagination.Artists.OffsetBasedPagination.Composite;

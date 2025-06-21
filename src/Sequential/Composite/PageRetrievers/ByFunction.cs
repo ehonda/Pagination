@@ -1,4 +1,4 @@
-namespace Sequential.Composite.PageRetrievers;
+namespace EHonda.Pagination.Sequential.Composite.PageRetrievers;
 
 // TODO: Is there any benefit in implementing this via the async variant? Are there any downsides? Maybe benchmark the
 //       difference

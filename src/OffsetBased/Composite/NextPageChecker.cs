@@ -1,8 +1,8 @@
 using System.Numerics;
-using OffsetBased.Composite.OffsetStateExtractors;
-using Sequential.Composite.NextPageCheckers;
+using EHonda.Pagination.OffsetBased.Composite.OffsetStateExtractors;
+using EHonda.Pagination.Sequential.Composite.NextPageCheckers;
 
-namespace OffsetBased.Composite;
+namespace EHonda.Pagination.OffsetBased.Composite;
 
 /// <summary>
 /// Checks if a next page exists for offset-based pagination using an <see cref="IOffsetStateExtractor{TPaginationContext, TIndex}"/>.

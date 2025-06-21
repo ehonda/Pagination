@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 using Ardalis.GuardClauses;
+using EHonda.Pagination.CursorBased.Composite;
 
 namespace SpotifyPagination.Artists;
 
@@ -58,7 +59,7 @@ public class ArtistsClient
     // We can also do cursor based thanks to the `Next` property in the responses
     public IAsyncEnumerable<Album> GetAlbumsCursorBased(string artistId)
     {
-        var handler = new CursorBased.Composite.PaginationHandlerBuilder<GetAlbumsResponse, Album>()
+        var handler = new PaginationHandlerBuilder<GetAlbumsResponse, Album>()
             .WithPageRetriever(async (context, cancellationToken) =>
             {
                 const int limit = 10;

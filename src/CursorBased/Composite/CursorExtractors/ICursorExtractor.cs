@@ -1,4 +1,4 @@
-namespace CursorBased.Composite.CursorExtractors;
+namespace EHonda.Pagination.CursorBased.Composite.CursorExtractors;
 
 /// <summary>
 /// Defines a contract for extracting a cursor from a pagination context, defaulting to a string cursor type.

@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
-using Core;
+using EHonda.Pagination.Core;
 using JetBrains.Annotations;
 
-namespace Sequential;
+namespace EHonda.Pagination.Sequential;
 
 /// <summary>
 /// Handles paginated resources by sequentially fetching pages. It uses a context object (<typeparamref name="TPaginationContext"/>)

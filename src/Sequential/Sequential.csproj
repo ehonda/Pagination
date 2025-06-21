@@ -2,9 +2,8 @@
 
     <PropertyGroup>
         <!-- Specific to this project -->
-        <PackageId>EHonda.Pagination.Sequential</PackageId>
         <Description>Provides sequential pagination functionality.</Description>
-        <PackageTags>pagination sequential paging</PackageTags>
+        <PackageTags>$(PackageTags) sequential</PackageTags>
     </PropertyGroup>
 
     <!-- Common properties are imported from Directory.Build.props -->

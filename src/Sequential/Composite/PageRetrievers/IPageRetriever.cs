@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace Sequential.Composite.PageRetrievers;
+namespace EHonda.Pagination.Sequential.Composite.PageRetrievers;
 
 /// <summary>
 /// Defines a contract for retrieving a page of data in a pagination context.

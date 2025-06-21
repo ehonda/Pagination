@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Core;
+namespace EHonda.Pagination.Core;
 
 /// <summary>
 /// A pagination handler is responsible for retrieving all items from a paginated resource.

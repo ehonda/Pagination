@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
-using Core;
-using OffsetBased.Composite;
+using EHonda.Pagination.Core;
+using EHonda.Pagination.OffsetBased;
+using EHonda.Pagination.OffsetBased.Composite;
 
 namespace OffsetBased.TUnit.Tests;
 

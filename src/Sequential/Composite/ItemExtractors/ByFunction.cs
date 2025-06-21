@@ -1,4 +1,4 @@
-namespace Sequential.Composite.ItemExtractors;
+namespace EHonda.Pagination.Sequential.Composite.ItemExtractors;
 
 /// <summary>
 /// Extracts items from a pagination context using a synchronous function.

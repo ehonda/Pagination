@@ -1,4 +1,4 @@
-namespace CursorBased;
+namespace EHonda.Pagination.CursorBased;
 
 public abstract class PaginationHandler<TPaginationContext, TItem>
     : PaginationHandler<TPaginationContext, string, TItem>

@@ -1,10 +1,10 @@
 using Ardalis.GuardClauses;
+using EHonda.Pagination.Sequential.Composite.ItemExtractors;
+using EHonda.Pagination.Sequential.Composite.NextPageCheckers;
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 using JetBrains.Annotations;
-using Sequential.Composite.ItemExtractors;
-using Sequential.Composite.NextPageCheckers;
-using Sequential.Composite.PageRetrievers;
 
-namespace Sequential.Composite;
+namespace EHonda.Pagination.Sequential.Composite;
 
 /// <summary>
 /// A builder for creating instances of <see cref="PaginationHandler{TPaginationContext, TItem}"/>.

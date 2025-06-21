@@ -1,5 +1,5 @@
-using Core;
-using CursorBased.Composite;
+using EHonda.Pagination.Core;
+using EHonda.Pagination.CursorBased.Composite;
 
 namespace CursorBased.TUnit.Tests;
 

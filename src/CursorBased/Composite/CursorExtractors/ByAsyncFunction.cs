@@ -1,4 +1,4 @@
-namespace CursorBased.Composite.CursorExtractors;
+namespace EHonda.Pagination.CursorBased.Composite.CursorExtractors;
 
 /// <summary>
 /// Extracts a cursor from a pagination context using an asynchronous function.

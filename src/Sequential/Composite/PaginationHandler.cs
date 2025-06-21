@@ -1,7 +1,7 @@
+using EHonda.Pagination.Sequential.Composite.PageRetrievers;
 using JetBrains.Annotations;
-using Sequential.Composite.PageRetrievers;
 
-namespace Sequential.Composite;
+namespace EHonda.Pagination.Sequential.Composite;
 
 /// <summary>
 /// Handles sequential pagination by composing page retrieval, next page checking, and item extraction logic.

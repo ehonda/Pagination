@@ -1,5 +1,5 @@
-using OffsetBased;
-using OffsetBased.Composite.OffsetStateExtractors;
+using EHonda.Pagination.OffsetBased;
+using EHonda.Pagination.OffsetBased.Composite.OffsetStateExtractors;
 
 namespace SpotifyPagination.Artists.OffsetBasedPagination.Composite;
 

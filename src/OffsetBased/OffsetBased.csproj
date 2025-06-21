@@ -2,9 +2,8 @@
 
     <PropertyGroup>
         <!-- Specific to this project -->
-        <PackageId>EHonda.Pagination.OffsetBased</PackageId>
         <Description>Provides offset-based pagination functionality.</Description>
-        <PackageTags>pagination offset-based offset paging</PackageTags>
+        <PackageTags>$(PackageTags) offset-based offset</PackageTags>
     </PropertyGroup>
 
     <!-- Common properties are imported from Directory.Build.props -->

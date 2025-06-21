@@ -1,4 +1,4 @@
-using CursorBased;
+using EHonda.Pagination.CursorBased;
 using JetBrains.Annotations;
 
 namespace TwitchPagination.Games;
