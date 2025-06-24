@@ -1,8 +1,5 @@
-namespace TestUtilities.Games;
+﻿namespace TestUtilities.Games;
 
 public record GetTopGamesResponse(
-    IReadOnlyList<string> Data,
-    Pagination Pagination);
-
-public record Pagination(
+    IReadOnlyList<string> Games,
     string? Cursor);

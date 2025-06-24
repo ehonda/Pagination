@@ -31,7 +31,7 @@ public class GamesClient
             nextCursor = (startIndex + pageSize).ToString();
         }
 
-        var response = new GetTopGamesResponse(pageItems, new Pagination(nextCursor));
+        var response = new GetTopGamesResponse(pageItems, nextCursor);
         return Task.FromResult(response);
     }
 
