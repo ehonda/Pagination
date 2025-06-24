@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\OffsetBased\OffsetBased.csproj" />
+      <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
     </ItemGroup>
 
     <ItemGroup>

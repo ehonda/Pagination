@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CursorBased\CursorBased.csproj" />
+    <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

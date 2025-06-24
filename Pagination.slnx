@@ -13,6 +13,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/OffsetBased.TUnit.Tests/OffsetBased.TUnit.Tests.csproj" />
     <Project Path="tests/Sequential.TUnit.Tests/Sequential.TUnit.Tests.csproj" />
-    <Project Path="tests\CursorBased.TUnit.Tests\CursorBased.TUnit.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests/TestUtilities/TestUtilities.csproj" />
+    <Project Path="tests\CursorBased.TUnit.Tests\CursorBased.TUnit.Tests.csproj" Type="C#" />
   </Folder>
 </Solution>

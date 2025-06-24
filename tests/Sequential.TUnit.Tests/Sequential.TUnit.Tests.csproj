@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Sequential\Sequential.csproj" />
+      <ProjectReference Include="..\TestUtilities\TestUtilities.csproj" />
     </ItemGroup>
 
     <ItemGroup>
