@@ -24,7 +24,7 @@
         <PackageReference Include="Microsoft.Extensions.Options" />
         <PackageReference Include="NodaTime" />
         <PackageReference Include="NodaTime.Serialization.SystemTextJson" />
-        <PackageReference Include="System.Linq.Async"/>
+        <PackageReference Include="System.Linq.Async" />
     </ItemGroup>
 
     <ItemGroup>
