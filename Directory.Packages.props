@@ -12,7 +12,7 @@
     <PackageVersion Include="TUnit" Version="0.25.21" />
 
     <!-- Sample Project Dependencies -->
-    <PackageVersion Include="dotenv.net" Version="3.2.1" />
+    <PackageVersion Include="dotenv.net" Version="4.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
